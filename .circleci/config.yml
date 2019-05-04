@@ -61,13 +61,13 @@ jobs:
           ls -al
           if [ "x$CIRCLE_TAG" == "x" ]
           then
-            SLS_STAGE=latest
+            export SLS_STAGE=latest
           else
-            SLS_STAGE=prod
+            export SLS_STAGE=prod
           fi
 
-          S3PREFIX=${CIRCLE_TAG:-latest}
-          GIT_REVISION=$(git describe)
+          export S3PREFIX=${CIRCLE_TAG:-latest}
+          export GIT_REVISION=$(git describe)
 
           echo $SLS_STAGE
           echo $S3PREFIX
