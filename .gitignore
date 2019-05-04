@@ -4,4 +4,11 @@ public
 .DS_Store
 .intermediate-representation/
 .cache/
-yarn.lock
+
+.envrc
+
+/.serverless/
+/.webpack/
+/.terraform
+
+*.log

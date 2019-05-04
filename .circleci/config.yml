@@ -1,0 +1,93 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@0.1.13
+
+jobs:
+  gatsby_build:
+    working_directory: /home/circleci/repo
+    docker:
+      - image: circleci/node:10.15
+    steps:
+      - checkout
+      - restore_cache: &restore_cache
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+      - run: &yarn_install_build |
+          pwd
+          yarn install
+          yarn run build
+          ls -al
+      - save_cache: &save_cache
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+
+      # https://circleci.com/docs/2.0/workflows/#using-workspaces-to-share-artifacts-among-jobs
+      - persist_to_workspace:
+          root: .
+          paths:
+            - public
+
+  s3copy:
+    working_directory: /home/circleci/repo
+    executor: aws-cli/default
+    steps:
+      - aws-cli/install
+      - attach_workspace:
+          at: /home/circleci/repo
+      - run: |
+          ls -al
+          S3PREFIX=${CIRCLE_TAG:-latest}
+          echo $S3PREFIX
+          aws --version
+          aws s3 rm s3://$ALUCIO_S3BUCKET_NAME/$S3PREFIX --recursive
+          aws s3 cp public s3://$ALUCIO_S3BUCKET_NAME/$S3PREFIX --recursive
+
+  sls_deploy:
+    working_directory: /home/circleci/repo
+    docker:
+      - image: circleci/node:10.15
+    steps:
+      - checkout
+      - restore_cache: &restore_cache
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+      - run: |
+          ls -al
+          if [ "x$CIRCLE_TAG" == "x" ]
+          then
+            SLS_STAGE=latest
+          else
+            SLS_STAGE=prod
+          fi
+
+          S3PREFIX=${CIRCLE_TAG:-latest}
+          GIT_REVISION=$(git describe)
+
+          echo $SLS_STAGE
+          echo $S3PREFIX
+          echo $GIT_REVISION
+
+          npx sls package --package build
+          cp -r build artifacts
+          npx sls deploy --package build
+      - store_artifacts:
+          path: build
+          destination: artifact-file
+
+workflows:
+  version: 2
+  build_s3copy:
+    jobs:
+      - gatsby_build
+      - s3copy:
+          requires:
+            - gatsby_build
+      - sls_deploy:
+          requires:
+            - s3copy

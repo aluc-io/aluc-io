@@ -1,63 +1,75 @@
+import { Link, graphql } from 'gatsby'
+import PropTypes from 'prop-types'
 import React from 'react'
-import { Link } from 'gatsby'
 import get from 'lodash/get'
+import reject from 'lodash/reject'
 import Helmet from 'react-helmet'
 
-import Bio from '../components/Bio'
 import Layout from '../components/layout'
+import SimplePostList from '../components/SimplePostList'
+import Seo from '../components/Seo'
 import { rhythm } from '../utils/typography'
+import LayoutHeader from '../components/LayoutHeader'
 
 class BlogIndex extends React.Component {
   render() {
-    const siteTitle = get(this, 'props.data.site.siteMetadata.title')
-    const posts = get(this, 'props.data.allMarkdownRemark.edges')
+    const config = get(this.props, 'data.site.siteMetadata')
+    const siteTitle = get(this.props, 'data.site.siteMetadata.title')
+    let posts = get(this.props, 'data.allMarkdownRemark.edges')
+    posts = reject(posts, p => ! p.node.frontmatter.published)
+
+    const { location } = this.props
 
     return (
-      <Layout location={this.props.location}>
-        <Helmet title={siteTitle} />
-        <Bio />
-        {posts.map(({ node }) => {
-          const title = get(node, 'frontmatter.title') || node.fields.slug
-          return (
-            <div key={node.fields.slug}>
-              <h3
-                style={{
-                  marginBottom: rhythm(1 / 4),
-                }}
-              >
-                <Link style={{ boxShadow: 'none' }} to={node.fields.slug}>
-                  {title}
-                </Link>
-              </h3>
-              <small>{node.frontmatter.date}</small>
-              <p dangerouslySetInnerHTML={{ __html: node.excerpt }} />
-            </div>
-          )
-        })}
+      <Layout location={location}>
+        <Seo config={config}/>
+        <LayoutHeader config={config} location={location}/>
+        {posts.length > 0 && <SimplePostList posts={posts} />}
       </Layout>
     )
   }
 }
 
+
+BlogIndex.propTypes = {
+  location: PropTypes.object.isRequired,
+}
+
 export default BlogIndex
 
+
 export const pageQuery = graphql`
-  query IndexQuery {
+  query LayoutQuery {
     site {
       siteMetadata {
+        siteTitle
         title
+        author
+        description
+        algolia {
+          appId
+        }
+        facebook {
+          appId
+        }
       }
     }
-    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+    allMarkdownRemark(
+      filter: { fields: { fileRelativePath: { regex: "/posts/.+?/index\\.md/" }}}
+      sort: { fields: [fields___prefix], order: DESC }
+    ) {
       edges {
         node {
           excerpt
           fields {
             slug
+            prefix
           }
           frontmatter {
-            date(formatString: "DD MMMM, YYYY")
             title
+            subTitle
+            category
+            published
           }
         }
       }

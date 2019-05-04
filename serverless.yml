@@ -1,0 +1,39 @@
+service: aluc-io
+frameworkVersion: ">=1.28.0"
+
+plugins:
+  - serverless-offline
+  - serverless-webpack
+
+custom:
+  webpack:
+    includeModules: false
+    webpackConfig: webpack.config.js
+    packager: yarn
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${env:SLS_STAGE}
+  region: ap-northeast-2
+  memorySize: 128
+  timeout: 2
+  environment:
+    ALUCIO_S3BUCKET_NAME: ${env:ALUCIO_S3BUCKET_NAME}
+    GIT_REVISION: ${env:GIT_REVISION}
+    S3PREFIX: ${env:S3PREFIX}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+      Resource:
+        - "arn:aws:s3:::${env:ALUCIO_S3BUCKET_NAME}"
+        - "arn:aws:s3:::${env:ALUCIO_S3BUCKET_NAME}/*"
+
+functions:
+  index:
+    handler: handler.index
+    events:
+      - http:
+          path: "/{proxy+}"
+          method: get

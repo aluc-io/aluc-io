@@ -2,8 +2,14 @@ import Typography from 'typography'
 import Wordpress2016 from 'typography-theme-wordpress-2016'
 
 Wordpress2016.overrideThemeStyles = () => ({
-  'a.gatsby-resp-image-link': {
+  'a:hover': {
+    backgroundColor: 'rgba(90, 118, 255, 0.19)',
+  },
+  'a': {
     boxShadow: 'none',
+  },
+  'body': {
+    fontFamily: "Open Sans",
   },
 })
 

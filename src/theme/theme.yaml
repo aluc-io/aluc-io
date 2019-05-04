@@ -1,0 +1,264 @@
+# OPTIONS
+
+colors:
+  background: &colors_background "#ffffff"
+  white: &colors_white "#ffffff"
+  accent: &colors_accent "#709425"
+  bright: &colors_bright "#ffffff"
+  dark: &colors_dark "#333333"
+  gray: &colors_gray "#555555"
+  lightGray: &colors_lightGray "#bbbbbb"
+  superLightGray: &colors_superLightGray "#dedede"
+
+# SPACE
+space :
+  # space options
+  default : 20px
+  xxs: 2px
+  xs: 5px
+  s: 10px
+  m: 20px
+  l: 40px
+  xl: 80px
+  inset:
+    default : 20px
+    xs: 5px
+    s: 10px
+    m: 20px
+    l: 40px
+  stack:
+    default : 0 0 20px 0
+    xxs: 0 0 2px 0
+    xs: 0 0 5px 0
+    s: 0 0 10px 0
+    m: 0 0 20px 0
+    l: 0 0 40px 0
+  inline:
+    default : 0 20px 0 0
+    xxs: 0 2px 0 0
+    xs: 0 5px 0 0
+    s: 0 10px 0 0
+    m: 0 20px 0 0
+    l: 0 40px 0 0
+  layoutPadding:
+    s: 0.5rem
+    m: 1.5rem
+    l: 1.8rem
+
+# SIZE
+size:
+  radius:
+    default: 10px
+    small: 5px
+# COLOR
+color:
+  # color options
+  neutral:
+    accent: &color-accent '#709425'
+    white: &color-white '#ffffff'
+    gray:
+      a: &color-gray-1 '#fafaf9'
+      b: &color-gray-2 '#f3f2f2'
+      c: &color-gray-3 '#ecebea'
+      d: '#dddbda'
+      e: '#c9c7c5'
+      f: '#b0adab'
+      g: '#969492'
+      h: '#706e6b'
+      i: '#514f4d'
+      j: &color-gray-10 '#3e3e3c'
+      k: '#2b2826'
+      dark: &color-gray-dark '#333333'
+      gray: &color-gray-gray '#555555'
+      lightGray: &color-gray-lightGray '#bbbbbb'
+      superLightGray: &color-gray-superLightGray '#dedede'
+      bright: &color-gray-bright '#ffffff'
+    black: '#000000'
+  brand:
+    primary: &color-brand-primary '#709425'
+    primaryActive: '#709425'
+    light: '#709425'
+    lightActive: '#709425'
+    dark: '#709425'
+    darkActive: '#709425'
+  special:
+    attention: &color-special-attention orange
+# FONT
+font:
+  # font options
+  family:
+    initial: 'Arial, sans-serif'
+    base: 'Nanum Gothic Coding'
+    target: &font-family-target 'Open Sans'
+  weight:
+    standard: 400
+    bold: 600
+  size:
+    xxs: &font-size-xs .8em
+    xs: &font-size-xs .95em
+    s: &font-size-s 1.1em
+    m: &font-size-m 1.35em
+    l: &font-size-l 1.7em
+    xl: &font-size-xl 2em
+    xxl: &font-size-xl 2.2em
+    xxxl: &font-size-xxl 2.8em
+  lineHeight:
+    xs: &font-line-height-xs 1.1
+    s: &font-line-height-s 1.2
+    m: &font-line-height-m 1.3
+    l: &font-line-height-l 1.4
+    xl: &font-line-height-l 1.5
+    xxl: &font-line-height-l 1.6
+    reset: &font-line-height-reset 1
+#TIME
+time:
+  duration:
+    default: 0.5s
+    long: 1s
+
+
+# GENERAL TOKENS
+background:
+  color:
+    primary: *color-white
+    alt: *color-gray-1
+    brand: *color-brand-primary
+text:
+  family: *font-family-target
+  color:
+    primary: *color-gray-10
+    primaryInverse: *color-white
+    brand: *color-brand-primary
+    attention: *color-special-attention
+  lineHeight:
+    default: *font-line-height-l
+  maxWidth:
+    tablet: 650px
+    desktop: 1024px
+heading:
+  family: *font-family-target
+  size:
+    h1: *font-size-xl
+    h2: *font-size-l
+    h3: *font-size-m
+  lineHeight:
+    h1: *font-line-height-xs
+    h2: *font-line-height-xs
+    h3: *font-line-height-xs
+  weight: 600
+line:
+  color: *color-gray-3
+icon:
+  color: *color-brand-primary
+
+
+# COMPONENT TOKENS
+hero:
+  h1:
+    size: *font-size-xxl
+    color: *color-white
+    lineHeight: *font-line-height-xs
+  background: 'linear-gradient(0deg, #E0306E, #6438B5)'
+blog:
+  h1:
+    size: *font-size-l
+    lineHeight: *font-line-height-xs
+    hoverColor: *color-brand-primary
+header:
+  height:
+    default: 80px
+    fixed: 50px;
+    homepage: 100px;
+
+navigator:
+  colors:
+    background: *color-white
+    postsListItemLink: *color-gray-gray
+    postsListItemLinkHover: *color-accent
+    postsHeader: *color-gray-gray
+  sizes:
+    closedHeight: 80,
+    postsListItemH1Font: 1.3,
+    postsListItemH2Font: 1.1,
+    fontIncraseForM: 1.15,
+    fontIncraseForL: 1.3
+main:
+  colors:
+    background: *color-white
+    title: *color-gray-gray
+    subTitle: *color-gray-gray
+    meta: *color-gray-gray
+    content: *color-gray-dark
+    footer: *color-gray-gray
+    contentHeading: *color-gray-gray
+    blockquoteFrame: *color-gray-lightGray
+    link: *color-accent
+    linkHover: *color-gray-dark
+    fbCommentsColorscheme: "light"
+  sizes:
+    articleMaxWidth: "50rem"
+    articleBoxMaxWidth: "70rem"
+  fonts:
+    title:
+      size: 1.9,
+      sizeM: 2.5,
+      sizeL: 2.7,
+      weight: 600,
+      lineHeight: 1.1
+    subTitle:
+      size: 1.5,
+      sizeM: 1.8,
+      sizeL: 1.95,
+      weight: 300,
+      lineHeight: 1.1
+    meta:
+      size: 0.9,
+      weight: 600
+    content:
+      size: 1.0,
+      sizeM: 1.15,
+      sizeL: 1.1,
+      lineHeight: 1.6
+    contentHeading:
+      h2Size: 1.5,
+      h3Size: 1.3,
+      weight: 600,
+      lineHeight: 1.3
+    footer:
+      size: 1,
+      lineHeight: 1.4
+info:
+  colors:
+    text: *colors_gray
+    background: *colors_background
+    socialIcons: *colors_lightGray
+    socialIconsHover: *colors_accent
+    menuLink: *colors_gray
+    menuLinkHover: *colors_accent
+  sizes:
+    width: 320,
+    headerHeight: 170
+  fonts:
+    boxTitleSize: 1.3,
+    boxTitleSizeM: 1.5,
+    boxTitleSizeL: 1.7
+
+mediaQueryTresholds:
+  M: 600
+  L: 1024
+
+mediaQuery:
+  s: "(max-width: 599px)"
+  m: "(min-width: 600px)"
+  l: "(min-width: 1024px)"
+
+
+footer:
+  fonts:
+    footnote:
+      size: 0.8em
+      lineHeight: 1.4
+  colors:
+    text: *colors_dark
+    link: *colors_accent
+    linkHove: *colors_lightGray
