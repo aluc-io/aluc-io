@@ -84,10 +84,13 @@ workflows:
   version: 2
   build_s3copy:
     jobs:
-      - gatsby_build
+      - gatsby_build:
+          filters: { tags: { only: /.*/ }}
       - s3copy:
+          filters: { tags: { only: /.*/ }}
           requires:
             - gatsby_build
       - sls_deploy:
+          filters: { tags: { only: /.*/ }}
           requires:
             - s3copy
