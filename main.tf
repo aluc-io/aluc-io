@@ -5,6 +5,15 @@ variable "PROJECT_NAME" {}
 
 data "aws_region" "current" {}
 
+terraform {
+  backend "s3" {
+    bucket = "aluc.io"
+    key    = "terraform-state"
+    region = "ap-northeast-2"
+    encrypt = true
+  }
+}
+
 resource "aws_cloudfront_distribution" "main" {
   origin {
     domain_name = "${aws_api_gateway_rest_api.prod.id}.execute-api.${data.aws_region.current.name}.amazonaws.com"
