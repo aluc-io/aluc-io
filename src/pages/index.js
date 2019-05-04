@@ -17,11 +17,10 @@ class BlogIndex extends React.Component {
     const siteTitle = get(this.props, 'data.site.siteMetadata.title')
     let posts = get(this.props, 'data.allMarkdownRemark.edges')
     posts = reject(posts, p => ! p.node.frontmatter.published)
-
     const { location } = this.props
 
     return (
-      <Layout location={location}>
+      <Layout location={location} maxWidth={rhythm(24)}>
         <Seo config={config}/>
         <LayoutHeader config={config} location={location}/>
         {posts.length > 0 && <SimplePostList posts={posts} />}

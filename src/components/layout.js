@@ -3,8 +3,7 @@ import PropTypes from "prop-types"
 import React from 'react'
 import throttle from "lodash/throttle"
 
-import { setWindowSize } from '_src/store'
-
+import { setWindowSize } from '../store'
 import { rhythm, scale } from '../utils/typography'
 import ToolBox from './ToolBox'
 import theme from "../theme/theme.yaml"
@@ -27,9 +26,7 @@ class Layout extends React.Component {
   }
 
   render() {
-    const { location, children, canRenderTOC, headings, tableOfContents } = this.props
-    // const rootPath = `${__PATH_PREFIX__}/`
-    // let header
+    const { location, children, canRenderTOC, headings, tableOfContents, maxWidth } = this.props
 
     return (
       <div className='layout'>
@@ -44,7 +41,7 @@ class Layout extends React.Component {
           .layout {
             margin-left: auto;
             margin-right: auto;
-            max-width: ${rhythm(32)};
+            max-width: ${maxWidth ? maxWidth : rhythm(32)};
             padding: ${rhythm(1.5)} ${rhythm(3 / 4)};
           }
           .tocBox {
@@ -63,7 +60,7 @@ class Layout extends React.Component {
           }
           @from-width l {
             .layout {
-              max-width: ${rhythm(36)};
+              max-width: ${maxWidth ? maxWidth : rhythm(36)};
             }
           }
         `}</style>
@@ -83,6 +80,7 @@ Layout.propTypes = {
   canRenderTOC: PropTypes.bool,
   headings: PropTypes.array,
   tableOfContents: PropTypes.string,
+  maxWidth: PropTypes.string,
   //fontSizeIncrease: PropTypes.number.isRequired,
   //setFontSizeIncrease: PropTypes.func.isRequired,
 }
