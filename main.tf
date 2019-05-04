@@ -1,12 +1,15 @@
 variable "BUCKET_NAME" {}
 variable "ROUTE53_ZONE_NAME" {}
 variable "BLOG_DOMAIN" {}
+variable "PROJECT_NAME" {}
+
+data "aws_region" "current" {}
 
 resource "aws_cloudfront_distribution" "main" {
   origin {
-    domain_name = "v5fomf30dj.execute-api.ap-northeast-2.amazonaws.com"
-    origin_path = "/dev"
-    origin_id   = "Custom-v5fomf30dj.execute-api.ap-northeast-2.amazonaws.com"
+    domain_name = "${aws_api_gateway_rest_api.prod.id}.execute-api.${data.aws_region.current.name}.amazonaws.com"
+    origin_path = "/prod"
+    origin_id   = "prod"
 
     custom_origin_config {
       http_port = 80
@@ -34,7 +37,7 @@ resource "aws_cloudfront_distribution" "main" {
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "Custom-v5fomf30dj.execute-api.ap-northeast-2.amazonaws.com"
+    target_origin_id = "prod"
 
     forwarded_values {
       query_string = false
@@ -66,6 +69,28 @@ resource "aws_cloudfront_distribution" "main" {
     acm_certificate_arn = "${data.aws_acm_certificate.alucio.arn}"
     ssl_support_method = "sni-only"
   }
+}
+
+resource "aws_api_gateway_rest_api" "prod" {
+  name        = "${var.PROJECT_NAME}-prod"
+  description = "This is my API for demonstration purposes"
+}
+
+resource "aws_api_gateway_resource" "prod" {
+  rest_api_id = "${aws_api_gateway_rest_api.prod.id}"
+  parent_id   = "${aws_api_gateway_rest_api.prod.root_resource_id}"
+  path_part   = "{proxy+}"
+}
+
+resource "aws_api_gateway_rest_api" "latest" {
+  name        = "${var.PROJECT_NAME}-latest"
+  description = "This is my API for demonstration purposes"
+}
+
+resource "aws_api_gateway_resource" "latest" {
+  rest_api_id = "${aws_api_gateway_rest_api.latest.id}"
+  parent_id   = "${aws_api_gateway_rest_api.latest.root_resource_id}"
+  path_part   = "{proxy+}"
 }
 
 provider "aws" {

@@ -58,18 +58,21 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
       - run: |
+          curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb
+          sudo dpkg -i ripgrep_11.0.1_amd64.deb
           ls -al
-          if [ "x$CIRCLE_TAG" == "x" ]
-          then
-            export SLS_STAGE=latest
-          else
-            export SLS_STAGE=prod
-          fi
 
+          export SLS_STAGE=$(node -e "console.log(process.env.CIRCLE_TAG ? 'prod' : 'latest')")
+          export SLS_APIGW_ID=$(terraform state show aws_api_gateway_rest_api.prod | rg "^id\s+?= (.*)" --replace="\$1")
+          export SLS_APIGW_ROOT_RESOURCE_ID=$(terraform state show aws_api_gateway_rest_api.prod | rg "^root_resource_id\s+?= (.*)" --replace="\$1")
+          export SLS_APIGW_PROXY_RESOURCE_ID=$(terraform state show aws_api_gateway_resource.prod | rg "^id\s+?= (.*)" --replace="\$1")
           export S3PREFIX=${CIRCLE_TAG:-latest}
           export GIT_REVISION=$(git describe)
 
           echo $SLS_STAGE
+          echo $SLS_APIGW_ID
+          echo $SLS_APIGW_ROOT_RESOURCE_ID
+          echo $SLS_APIGW_PROXY_RESOURCE_ID
           echo $S3PREFIX
           echo $GIT_REVISION
 

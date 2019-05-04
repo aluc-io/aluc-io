@@ -1,29 +1,39 @@
-# gatsby-starter-blog
-Gatsby starter for creating a blog
+# aluc-io
+https://aluc.io/ blog
 
-Install this starter (assuming Gatsby is installed) by running from your CLI:
+## environment
 
-`gatsby new gatsby-blog https://github.com/gatsbyjs/gatsby-starter-blog`
+example:
+```
+export AWS_ACCESS_KEY_ID=AKXXXXXXXXXXXXXXXXRA
+export AWS_SECRET_ACCESS_KEY=kvxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxzZ
+export AWS_DEFAULT_REGION=ap-northeast-2
+
+export ALGOLIA_INDEX_NAME=algoria-index-name
+export ALGOLIA_APP_ID=VXXXXXXXXI
+export ALGOLIA_SEARCH_ONLY_API_KEY=f2xxxxxxxxxxxxxxxxxxxxxxxxxxxx87
+export ALGOLIA_ADMIN_API_KEY=7dxxxxxxxxxxxxxxxxxxxxxxxxxxxx9c
+
+export ALUCIO_PROJECT_NAME=alucio
+export ALUCIO_S3BUCKET_NAME=s3-bucket-name
+export ALUCIO_UTTERANCES_REPO=b6pzeusbc54tvhw5jgpyw8pwz2x6gs/aluc-io-comment
+
+export SLS_APIGW_ID=$(terraform state show aws_api_gateway_rest_api.prod | rg "^id\s+?= (.*)" --replace="\$1")
+export SLS_APIGW_ROOT_RESOURCE_ID=$(terraform state show aws_api_gateway_rest_api.prod | rg "^root_resource_id\s+?= (.*)" --replace="\$1")
+export SLS_APIGW_PROXY_RESOURCE_ID=$(terraform state show aws_api_gateway_resource.prod | rg "^id\s+?= (.*)" --replace="\$1")
+
+export TF_VAR_PROJECT_NAME=$ALUCIO_PROJECT_NAME
+export TF_VAR_BUCKET_NAME=$ALUCIO_S3BUCKET_NAME
+export TF_VAR_ROUTE53_ZONE_NAME=aluc.io
+export TF_VAR_BLOG_DOMAIN=aluc.io
+```
 
 ## Running in development
-`gatsby develop`
 
-
-## deploy test
-```sh
-$ npx gatsby build
-$ aws s3 rm --recursive s3://$TF_VAR_TEST_BUCKET_NAME/ --exclude 'slide-*'
-$ aws s3 cp --recursive public s3://$TF_VAR_TEST_BUCKET_NAME/
+```
+$ yarn dev
 ```
 
-## deploy prd
+## Deploy
+refer to `.circleci/config.yml`
 
-```sh
-$ yarn run build
-$ aws s3 rm --recursive s3://$SLS_BUCKET_NAME/$CIRCLE_TAG --exclude 'slide-*'
-$ aws s3 cp --recursive public s3://$SLS_BUCKET_NAME/$CIRCLE_TAG
-```
-
-```sh
-$ npx sls deploy --verbose
-```
