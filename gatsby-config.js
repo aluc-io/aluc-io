@@ -51,6 +51,10 @@ module.exports = {
       }
     },
     {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: { trackingId: process.env.ALUCIO_GOOGLE_ANALYTICS_TRACKING_ID },
+    },
+    {
       resolve: `gatsby-transformer-remark`,
       options: {
         commonmark: true,
@@ -81,12 +85,6 @@ module.exports = {
     },
     `gatsby-plugin-sharp`,
     `gatsby-transformer-sharp`,
-    {
-      resolve: `gatsby-plugin-google-analytics`,
-      options: {
-        //trackingId: `ADD YOUR TRACKING ID HERE`,
-      },
-    },
     //`gatsby-plugin-feed`,
     `gatsby-plugin-offline`,
     `gatsby-plugin-react-helmet`,

@@ -17,6 +17,7 @@ export ALGOLIA_ADMIN_API_KEY=7dxxxxxxxxxxxxxxxxxxxxxxxxxxxx9c
 export ALUCIO_PROJECT_NAME=alucio
 export ALUCIO_S3BUCKET_NAME=s3-bucket-name
 export ALUCIO_UTTERANCES_REPO=b6pzeusbc54tvhw5jgpyw8pwz2x6gs/aluc-io-comment
+export ALUCIO_GOOGLE_ANALYTICS_TRACKING_ID=UA-XXXXXXXXX-X
 
 terraform state pull > tmp.tfstate
 export SLS_APIGW_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_rest_api." + env.S3PREFIX].primary.id')
