@@ -18,9 +18,10 @@ export ALUCIO_PROJECT_NAME=alucio
 export ALUCIO_S3BUCKET_NAME=s3-bucket-name
 export ALUCIO_UTTERANCES_REPO=b6pzeusbc54tvhw5jgpyw8pwz2x6gs/aluc-io-comment
 
-export SLS_APIGW_ID=$(terraform state show aws_api_gateway_rest_api.prod | rg "^id\s+?= (.*)" --replace="\$1")
-export SLS_APIGW_ROOT_RESOURCE_ID=$(terraform state show aws_api_gateway_rest_api.prod | rg "^root_resource_id\s+?= (.*)" --replace="\$1")
-export SLS_APIGW_PROXY_RESOURCE_ID=$(terraform state show aws_api_gateway_resource.prod | rg "^id\s+?= (.*)" --replace="\$1")
+terraform state pull > tmp.tfstate
+export SLS_APIGW_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_rest_api." + env.S3PREFIX].primary.id')
+export SLS_APIGW_ROOT_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_rest_api." + env.S3PREFIX].primary.attributes.root_resource_id)
+export SLS_APIGW_PROXY_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_resource." + env.S3PREFIX].primary.id')
 
 export TF_VAR_PROJECT_NAME=$ALUCIO_PROJECT_NAME
 export TF_VAR_BUCKET_NAME=$ALUCIO_S3BUCKET_NAME

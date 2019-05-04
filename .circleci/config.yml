@@ -57,35 +57,50 @@ jobs:
       - restore_cache: &restore_cache
           keys:
             - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+            - dot-terraform-{{ checksum "main.tf" }}
       - run: |
           curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb
           sudo dpkg -i ripgrep_11.0.1_amd64.deb
+          rm ripgrep_11.0.1_amd64.deb
+
+          wget https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip
+          unzip terraform_0.11.13_linux_amd64.zip
+          rm terraform_0.11.13_linux_amd64.zip
+          sudo mv terraform /usr/local/bin/
+
           ls -al
 
-          export SLS_STAGE=$(node -e "console.log(process.env.CIRCLE_TAG ? 'prod' : 'latest')")
-          export SLS_APIGW_ID=$(terraform state show aws_api_gateway_rest_api.prod | rg "^id\s+?= (.*)" --replace="\$1")
-          export SLS_APIGW_ROOT_RESOURCE_ID=$(terraform state show aws_api_gateway_rest_api.prod | rg "^root_resource_id\s+?= (.*)" --replace="\$1")
-          export SLS_APIGW_PROXY_RESOURCE_ID=$(terraform state show aws_api_gateway_resource.prod | rg "^id\s+?= (.*)" --replace="\$1")
-          export S3PREFIX=${CIRCLE_TAG:-latest}
           export GIT_REVISION=$(git describe)
+          export S3PREFIX=${CIRCLE_TAG:-latest}
+          export SLS_STAGE=$(node -e "console.log(process.env.CIRCLE_TAG ? 'prod' : 'latest')")
 
+          terraform init
+          terraform state pull > tmp.tfstate
+          export SLS_APIGW_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_rest_api." + env.SLS_STAGE].primary.id')
+          export SLS_APIGW_ROOT_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_rest_api." + env.SLS_STAGE].primary.attributes.root_resource_id')
+          export SLS_APIGW_PROXY_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_resource." + env.SLS_STAGE].primary.id')
+
+          echo $GIT_REVISION
+          echo $S3PREFIX
           echo $SLS_STAGE
           echo $SLS_APIGW_ID
           echo $SLS_APIGW_ROOT_RESOURCE_ID
           echo $SLS_APIGW_PROXY_RESOURCE_ID
-          echo $S3PREFIX
-          echo $GIT_REVISION
 
           npx sls package --package build
           cp -r build artifacts
           npx sls deploy --package build
+      - save_cache:
+          paths:
+            - .terraform
+          key: dot-terraform-{{ checksum "main.tf" }}
       - store_artifacts:
           path: build
           destination: artifact-file
 
 workflows:
   version: 2
-  build_s3copy:
+  build_s3copy_slsdeploy:
     jobs:
       - gatsby_build:
           filters: { tags: { only: /.*/ }}
