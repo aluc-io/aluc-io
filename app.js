@@ -18,14 +18,14 @@ app.use('/version.json', (req, res) => {
 
 app.use('/', (req, res) => {
   const s3Path =
-        /^\/\d\d\d\d-\d\d-\d\d--/.test(req.path) ? join(req.path, 'index.html')     // posts
-      : req.path.split('-')[0] === 'slide'       ? join(req.path, 'index.html')
-      : /^\/search/.test(req.path)               ? join(req.path, 'index.html')
-      : /^\/about-me/.test(req.path)             ? join(req.path, 'index.html')
-      : /^\/qr/.test(req.path)                   ? join('/about-me', 'index.html')
-      : /^\/favicon\.ico/.test(req.path)         ? join('favicon','favicon.ico')
-      : /^\/favicon\//.test(req.path)            ? join(req.path)
-      : req.path === '/'                         ? 'index.html'
+        /^\/\d\d\d\d-\d\d-\d\d-/.test(req.path) ? join(req.path, 'index.html')     // posts
+      : req.path.split('-')[0] === 'slide'      ? join(req.path, 'index.html')
+      : /^\/search/.test(req.path)              ? join(req.path, 'index.html')
+      : /^\/about-me/.test(req.path)            ? join(req.path, 'index.html')
+      : /^\/qr/.test(req.path)                  ? join('/about-me', 'index.html')
+      : /^\/favicon\.ico/.test(req.path)        ? join('favicon','favicon.ico')
+      : /^\/favicon\//.test(req.path)           ? join(req.path)
+      : req.path === '/'                        ? 'index.html'
       : req.path
 
   const params = { Bucket: ALUCIO_S3BUCKET_NAME, Key: slash(join(S3PREFIX, s3Path)) }

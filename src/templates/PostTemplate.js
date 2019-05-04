@@ -27,7 +27,7 @@ class PostTemplate extends React.Component {
 
     return (
       <Layout location={location} canRenderTOC={canRenderTOC} headings={headings} tableOfContents={tableOfContents}>
-        { !/\/pages\/1--about\/?$/.test(location.pathname)  && <LayoutHeader location={location} config={config}/>}
+        { !/\/about-me\/?$/.test(location.pathname) && <LayoutHeader location={location} config={config}/>}
         <Post
           location={location}
           post={data.post}
