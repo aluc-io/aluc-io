@@ -88,7 +88,6 @@ jobs:
           echo $SLS_APIGW_PROXY_RESOURCE_ID
 
           npx sls package --package build
-          cp -r build artifacts
           npx sls deploy --package build
       - save_cache:
           paths:
