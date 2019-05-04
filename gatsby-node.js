@@ -78,7 +78,7 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   const relativeFilePath = createFilePath({ node, getNode, trailingSlash: false })
   createNodeField({ node, name: `slug`, value: relativeFilePath })
 
-  const prefix = path.basename(slug).split('--')[0]
+  const prefix = path.basename(slug).split('-').slice(0,3)
   createNodeField({ node, name: `prefix`, value: prefix })
 }
 
