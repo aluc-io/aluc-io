@@ -9,16 +9,13 @@ require("prismjs/themes/prism-okaidia.css")
 import Post from "../components/Post/"
 import Footer from "_src/components/Footer/"
 import Seo from "_src/components/Seo"
-import Article from "../components/Main/Article"
 
-import theme from "_src/theme/theme.yaml"
 import config from "_config/meta"
 import Layout from '../components/layout'
-import LayoutHeader from '_src/components/LayoutHeader'
 import { canRenderTOCSelector } from '../selectors/layout'
+import LeftTopButton from "../components/Post/LeftTopButton";
 
 class PostTemplate extends React.Component {
-
   render() {
     const { location, data, pathContext, canRenderTOC } = this.props
     const tableOfContents = data.post.tableOfContents
@@ -27,7 +24,7 @@ class PostTemplate extends React.Component {
 
     return (
       <Layout location={location} canRenderTOC={canRenderTOC} headings={headings} tableOfContents={tableOfContents}>
-        { !/\/about-me\/?$/.test(location.pathname) && <LayoutHeader location={location} config={config}/>}
+        <LeftTopButton/>
         <Post
           location={location}
           post={data.post}

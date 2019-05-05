@@ -18,24 +18,24 @@ const LI = ({ value, depth, id, isActive }) => {
   return (
     <li className={cn}>
       <a href={'#' + id}>{vArr.join('')}</a>
-        <style jsx>{`
-          li {
-            font-size: 14px;
-            margin: 0px;
-          }
-          :global(.actived) {
-            background-color: #6e6ee866;
-          }
-          :global(.depth1) {
-            padding-left: 0px;
-          }
-          :global(.depth2) {
-            padding-left: 12px;
-          }
-          :global(.depth3) {
-            padding-left: 24px;
-          }
-        `}</style>
+      <style jsx>{`
+        li {
+          font-size: 14px;
+          margin: 0px;
+        }
+        :global(.actived) {
+          background-color: #6e6ee866;
+        }
+        :global(.depth1) {
+          padding-left: 0px;
+        }
+        :global(.depth2) {
+          padding-left: 12px;
+        }
+        :global(.depth3) {
+          padding-left: 24px;
+        }
+      `}</style>
     </li>
   )
 }
@@ -83,19 +83,27 @@ class TOC extends React.Component {
     const { showLayout } = this.props
 
     return (
-      <div className='toc'>
-        <div className="tocInner">
-          <Scrollspy
-            items={headingIdArr}
-            currentClassName="is-current"
-            scrolledPastClassName='past'
-            onUpdate={this.updateTOC}
-          >
-            { this.state.headings.map( (h,i) => <LI key={i} value={h.value} depth={h.depth} id={h.id} isActive={h.isActive}/>)}
-          </Scrollspy>
+      <div className='tocBox'>
+        <div className='toc'>
+          <div className="tocInner">
+            <Scrollspy
+              items={headingIdArr}
+              currentClassName="is-current"
+              scrolledPastClassName='past'
+              onUpdate={this.updateTOC}
+            >
+              { this.state.headings.map( (h,i) => <LI key={i} value={h.value} depth={h.depth} id={h.id} isActive={h.isActive}/>)}
+            </Scrollspy>
+          </div>
         </div>
 
         <style jsx>{`
+          .tocBox {
+            width: 300px;
+            position: fixed;
+            left: 0px;
+            background-color: red;
+          }
           .toc {
             font-size: 12px;
             margin-top: 122px;

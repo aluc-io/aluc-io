@@ -5,7 +5,6 @@ import PropTypes from "prop-types"
 import React from "react"
 import cx from "classnames"
 
-import { isWideScreenSelector } from '_src/selectors/layout'
 import avatar from "../../../static/new-avatar.png"
 import theme from "../../theme/theme.yaml"
 
@@ -22,7 +21,7 @@ const LayoutHeader = props => {
         </Link>
       </div>
       <div className='siteTitleBox'>
-        <Link className='siteTitle' to="/">{config.siteTitle}</Link>
+        <span className='siteTitle'>{config.siteTitle}</span>
       </div>
       <style jsx>{`
         .link {
@@ -115,7 +114,6 @@ LayoutHeader.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  isWideScreen: isWideScreenSelector(state),
   showLayout: state.layout.showLayout,
   //navigatorPosition: state.navigatorPosition,
   //navigatorShape: state.navigatorShape,

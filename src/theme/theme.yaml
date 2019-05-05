@@ -132,9 +132,6 @@ text:
     attention: *color-special-attention
   lineHeight:
     default: *font-line-height-l
-  maxWidth:
-    tablet: 650px
-    desktop: 1024px
 heading:
   family: *font-family-target
   size:
@@ -245,13 +242,14 @@ info:
 
 mediaQueryTresholds:
   M: 600
-  L: 1024
+  L: 800
+  XL: 1080
 
 mediaQuery:
   s: "(max-width: 599px)"
   m: "(min-width: 600px)"
-  l: "(min-width: 1024px)"
-
+  l: "(min-width: 800px)"
+  xl: "(min-width: 1080px)"
 
 footer:
   fonts:
