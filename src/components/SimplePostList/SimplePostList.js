@@ -24,20 +24,12 @@ class SimplePostList extends React.Component {
           categoryFilter={categoryFilter}
           removeFilter={this.removefilterOnClick}
         />
-        <div className='seeMore'>See more...</div>
         <style jsx>{`
           .box {
             transform: translate3d(0, 0, 0);
             width: 100%;
             background-color: ${showLayout ? "rgba(0, 21, 128, 0.17)" : theme.navigator.colors.background};
             margin: 10px auto 0 auto;
-          }
-          .seeMore {
-            margin-top: 20px;
-            font-family: ${theme.font.family.base};
-            font-size: 1.2rem;
-            font-style: oblique;
-            color: ${theme.color.neutral.accent};
           }
           @media ${theme.mediaQuery.s} {
             .box {
