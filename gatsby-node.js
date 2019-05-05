@@ -113,7 +113,6 @@ exports.onCreateBabelConfig = ({ actions }) => {
     name: "styled-jsx/babel",
     options: {
       plugins: [
-        "styled-jsx-plugin-postcss",
         ["styled-jsx-plugin-stylelint", { stylelint: require('./stylelint.config') }],
       ],
     }

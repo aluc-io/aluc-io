@@ -3,8 +3,7 @@ import React from "react"
 import PropTypes from "prop-types"
 import { InstantSearch, SearchBox, Hits, Stats, Pagination } from "react-instantsearch/dom"
 
-import injectSheet from "react-jss"
-
+import algoliaLogo from "../../../static/search-by-algolia-light-background.png"
 import Hit from "./Hit"
 
 const Search = props => {
@@ -15,6 +14,7 @@ const Search = props => {
 
   return (
     <div className='box'>
+      <img src={algoliaLogo}/>
       {algolia && algolia.appId && (
         <InstantSearch
           appId={algolia.appId}
@@ -27,10 +27,10 @@ const Search = props => {
           <Pagination />
         </InstantSearch>
       )}
-      <style jsx>{`
-        margin-top: 60px;
-      `}</style>
       <style jsx global>{`
+        .box {
+          margin-top: 40px;
+        }
         .ais-SearchBox {
           width: 100%;
         }

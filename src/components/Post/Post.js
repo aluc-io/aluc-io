@@ -2,9 +2,8 @@ import React from "react"
 import PropTypes from "prop-types"
 import { connect } from "react-redux"
 
-import theme from "_src/theme/theme.yaml"
+import theme from "../../theme/theme.yaml"
 
-import { canRenderTOCSelector } from '../../selectors/layout'
 import Headline from "./Headline"
 import Content from "../Main/Content"
 import PostFooter from "./PostFooter"
@@ -16,7 +15,7 @@ const Post = props => {
   const frontmatter = (post || {}).frontmatter
 
   const title = frontmatter.title
-  const subTitle = frontmatter.subTitle
+  // const subTitle = frontmatter.subTitle
   const category = frontmatter.category
   const authorName = 'alfreduc'
 
@@ -32,8 +31,6 @@ const Post = props => {
         <PostFooter author={author} post={post} slug={slug} facebook={facebook} />
       </article>
       <style jsx>{`
-        .box {
-        }
         .articleBox {
           padding: ${theme.space.inset.xs};
           margin: 0 auto;
@@ -49,7 +46,7 @@ const Post = props => {
             padding: ${`calc(${theme.space.default} * 2) 0 calc(${
               theme.space.default
             })`};
-            max-width: ${theme.text.maxWidth.desktop};
+            max-width: ${theme.mediaQueryTresholds.L}px;
           }
         }
       `}</style>
@@ -59,7 +56,6 @@ const Post = props => {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    canRenderTOC: canRenderTOCSelector(state),
     showLayout: state.layout.showLayout,
   }
 }

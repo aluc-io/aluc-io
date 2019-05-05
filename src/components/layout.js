@@ -6,66 +6,43 @@ import throttle from "lodash/throttle"
 import { setWindowSize } from '../store'
 import { rhythm, scale } from '../utils/typography'
 import ToolBox from './ToolBox'
-import theme from "../theme/theme.yaml"
 import TOC from "../components/Post/TOC"
 
 class Layout extends React.Component {
   componentDidMount() {
     this.resizeHandler()
-    if (typeof window !== "undefined") {
-      const throttleHandler = throttle(this.resizeHandler, 500)
-      window.addEventListener("resize", throttleHandler, false)
-    }
+    if (typeof window === "undefined") return
+
+    const throttleHandler = throttle(this.resizeHandler, 500)
+    window.addEventListener("resize", throttleHandler, false)
   }
 
   resizeHandler = () => {
-    this.props.setWindowSize({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    })
+    const { innerWidth: width, innerHeight: height } = window
+    this.props.setWindowSize({ width, height })
   }
 
   render() {
-    const { location, children, canRenderTOC, headings, tableOfContents, maxWidth } = this.props
+    const { location, children, canRenderTOC, headings, tableOfContents } = this.props
 
     return (
       <div className='layout'>
         <ToolBox location={location}/>
-        <div className='tocBox'>
-          { canRenderTOC && <TOC headings={headings} tableOfContents={tableOfContents}/>}
-        </div>
-        <div className='content'>
-          {children}
-        </div>
+        { canRenderTOC && <TOC headings={headings} tableOfContents={tableOfContents}/>}
+        <div className='content'>{children}</div>
         <style jsx>{`
           .layout {
             margin-left: auto;
             margin-right: auto;
-            max-width: ${maxWidth ? maxWidth : rhythm(32)};
+            max-width: ${rhythm(25.2)};
             padding: ${rhythm(1.5)} ${rhythm(3 / 4)};
-          }
-          .tocBox {
-            width: ${canRenderTOC ? '25%' : '0%' };
-            float: left;
-            background-color: red;
           }
           .content {
             width: 100%;
-            padding-left: ${canRenderTOC ? '25%' : '0%' };
             box-sizing: border-box;
-          }
-          @from-width m {
-            .layout {
-            }
-          }
-          @from-width l {
-            .layout {
-              max-width: ${maxWidth ? maxWidth : rhythm(36)};
-            }
           }
         `}</style>
       </div>
-
     )
   }
 }

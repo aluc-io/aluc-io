@@ -1,7 +1,6 @@
-import { connect } from 'react-redux'
-import { forceCheck } from "react-lazyload"
-import PropTypes from "prop-types"
 import React from "react"
+import { connect } from 'react-redux'
+import PropTypes from "prop-types"
 
 import ListItem from "./ListItem"
 
@@ -32,7 +31,6 @@ class List extends React.Component {
             top: 0px;
             width: 100%;
           }
-          .inner { }
           .list {
             list-style: none;
             margin: 0;
