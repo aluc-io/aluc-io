@@ -1,7 +1,6 @@
 import React from "react"
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
-import Link from "gatsby-link"
 import FaCalendar from "react-icons/lib/fa/calendar"
 import FaUser from "react-icons/lib/fa/user"
 import FaTag from "react-icons/lib/fa/tag"
@@ -21,8 +20,7 @@ const Meta = props => {
       </span>
       {category && (
         <span>
-          <FaTag size={18} />
-          <Link to={`/category/${category}`}>{category}</Link>
+          <FaTag size={18} /> {category}
         </span>
       )}
 
