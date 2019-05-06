@@ -49,25 +49,15 @@ const transformer = ({ data }) => {
     }
     node.htmlAst.children.forEach(recusive)
 
-
-    let currentHeadingId = node.fields.slug
+    let currentHeadingId = node.frontmatter.title
     let currentSlug = ""
     let tmpTextList = []
-
-    algoliaObjectList.push({
-      objectID: `${currentHeadingId} -- page`,
-      searchableFrontmatter: { title: node.frontmatter.title },
-      text: "",
-      slug: currentSlug,
-      fields: node.fields,
-      frontmatter: node.frontmatter,
-    })
 
     list.forEach(n => {
       if (includes(["h1", "h2", "h3"], n.tagName)) {
         tmpTextList = compact(tmpTextList)
 
-        // create algoliaRecord
+        // 모아 놓은 Text 로 algoliaRecord 생성
         algoliaObjectList.push({
           objectID: currentHeadingId,
           text: compact(tmpTextList).join(" "),
@@ -76,7 +66,7 @@ const transformer = ({ data }) => {
           frontmatter: node.frontmatter,
         })
 
-        currentHeadingId = `${node.fields.slug}#${n.properties.id}`,
+        currentHeadingId = `${node.fields.slug}#${n.properties.id}`
         currentSlug = n.properties.id
 
         tmpTextList = []
@@ -84,6 +74,15 @@ const transformer = ({ data }) => {
         const text = n.value.replace(/\n/g, "").trim()
         text && tmpTextList.push(text)
       }
+    })
+
+    // 마지막 모아 놓은 Text 로 algoliaRecord 생성
+    algoliaObjectList.push({
+      objectID: currentHeadingId,
+      text: compact(tmpTextList).join(" "),
+      slug: currentSlug,
+      fields: node.fields,
+      frontmatter: node.frontmatter,
     })
 
     return algoliaObjectList

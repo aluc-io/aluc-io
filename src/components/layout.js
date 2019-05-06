@@ -23,12 +23,11 @@ class Layout extends React.Component {
   }
 
   render() {
-    const { location, children, canRenderTOC, headings, tableOfContents } = this.props
+    const { location, children } = this.props
 
     return (
       <div className='layout'>
         <ToolBox location={location}/>
-        { canRenderTOC && <TOC headings={headings} tableOfContents={tableOfContents}/>}
         <div className='content'>{children}</div>
         <style jsx>{`
           .layout {
@@ -55,10 +54,6 @@ Layout.propTypes = {
   ]).isRequired,
   setWindowSize: PropTypes.func.isRequired,
   location: PropTypes.object.isRequired,
-  canRenderTOC: PropTypes.bool,
-  headings: PropTypes.array,
-  tableOfContents: PropTypes.string,
-  maxWidth: PropTypes.string,
   //fontSizeIncrease: PropTypes.number.isRequired,
   //setFontSizeIncrease: PropTypes.func.isRequired,
 }

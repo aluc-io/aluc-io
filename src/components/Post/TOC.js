@@ -78,15 +78,22 @@ class TOC extends React.Component {
     })
   }
 
+  goToTop = () => {
+    window.scrollTo(0,0)
+    setTimeout(() => location.hash = '', 500)
+  }
+
   render() {
     const headingIdArr = this.state.headings.map(h => h.id)
-    const { showLayout } = this.props
+    const { showLayout, title } = this.props
 
     return (
       <div className='tocBox'>
         <div className='toc'>
+          <div className='title' onClick={this.goToTop}>{title}</div>
           <div className="tocInner">
             <Scrollspy
+              ref={t => this.ss = t}
               items={headingIdArr}
               currentClassName="is-current"
               scrolledPastClassName='past'
@@ -98,6 +105,13 @@ class TOC extends React.Component {
         </div>
 
         <style jsx>{`
+          .title {
+            cursor: pointer;
+          }
+          .title:hover {
+            box-shadow: none;
+            background-color: rgba(0, 128, 0, 0.2);
+          }
           .tocBox {
             width: 300px;
             position: fixed;
@@ -129,6 +143,7 @@ class TOC extends React.Component {
 TOC.propTypes = {
   headings: PropTypes.array.isRequired,
   tableOfContents: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
   showLayout: PropTypes.bool.isRequired,
 }
 

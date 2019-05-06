@@ -14,17 +14,20 @@ import config from "_config/meta"
 import Layout from '../components/layout'
 import { canRenderTOCSelector } from '../selectors/layout'
 import LeftTopButton from "../components/Post/LeftTopButton";
+import TOC from "../components/Post/TOC";
 
 class PostTemplate extends React.Component {
   render() {
     const { location, data, pathContext, canRenderTOC } = this.props
     const tableOfContents = data.post.tableOfContents
+    const title = data.post.frontmatter.title
     const headings = data.post.headings
     const facebook = (((data || {}).site || {}).siteMetadata || {}).facebook
 
     return (
-      <Layout location={location} canRenderTOC={canRenderTOC} headings={headings} tableOfContents={tableOfContents}>
+      <Layout location={location}>
         <LeftTopButton/>
+        { canRenderTOC && <TOC headings={headings} tableOfContents={tableOfContents} title={title}/>}
         <Post
           location={location}
           post={data.post}

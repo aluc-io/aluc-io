@@ -13,7 +13,7 @@ export const app = express()
 app.use(morgan('short'));
 
 app.use('/version.json', (req, res) => {
-  res.json({ GIT_REVISION })
+  res.json({ GIT_REVISION, S3PREFIX })
 })
 
 app.use('/', (req, res) => {
