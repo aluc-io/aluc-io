@@ -20,7 +20,7 @@ const LI = ({ value, depth, id, isActive }) => {
       <a href={'#' + id}>{vArr.join('')}</a>
       <style jsx>{`
         li {
-          font-size: 14px;
+          font-size: 13px;
           margin: 0px;
         }
         :global(.actived) {
@@ -101,13 +101,12 @@ class TOC extends React.Component {
           .tocBox {
             width: 300px;
             position: fixed;
-            left: 0px;
+            left: 10px;
             background-color: red;
           }
           .toc {
-            font-size: 12px;
             margin-top: 122px;
-            width: 240px;
+            width: 220px;
             position: fixed;
             overflow: hidden;
           }
