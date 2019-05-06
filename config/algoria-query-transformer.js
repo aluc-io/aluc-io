@@ -49,19 +49,9 @@ const transformer = ({ data }) => {
     }
     node.htmlAst.children.forEach(recusive)
 
-
-    let currentHeadingId = node.fields.slug
+    let currentHeadingId = node.frontmatter.title
     let currentSlug = ""
     let tmpTextList = []
-
-    algoliaObjectList.push({
-      objectID: `${currentHeadingId} -- page`,
-      searchableFrontmatter: { title: node.frontmatter.title },
-      text: "",
-      slug: currentSlug,
-      fields: node.fields,
-      frontmatter: node.frontmatter,
-    })
 
     list.forEach(n => {
       if (includes(["h1", "h2", "h3"], n.tagName)) {
@@ -76,7 +66,7 @@ const transformer = ({ data }) => {
           frontmatter: node.frontmatter,
         })
 
-        currentHeadingId = `${node.fields.slug}#${n.properties.id}`,
+        currentHeadingId = `${node.fields.slug}#${n.properties.id}`
         currentSlug = n.properties.id
 
         tmpTextList = []

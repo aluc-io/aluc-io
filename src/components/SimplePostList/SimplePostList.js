@@ -1,29 +1,32 @@
 import { connect } from "react-redux"
-import { forceCheck } from "react-lazyload"
 import PropTypes from "prop-types"
 import React from 'react'
 
 import { setNavigatorPosition, setNavigatorShape, setCategoryFilter } from "_src/store"
-import List from "./List"
 import theme from "_src/theme/theme.yaml"
+import ListItem from './ListItem';
 
 class SimplePostList extends React.Component {
 
   render() {
-    const { posts, navigatorPosition, navigatorShape, categoryFilter } = this.props
-    const { showLayout } = this.props
+    const { posts, showLayout } = this.props
 
     return (
       <div className='box'>
-        <List
-          posts={posts}
-          navigatorPosition={navigatorPosition}
-          navigatorShape={navigatorShape}
-          linkOnClick={(e) => console.log(e)}
-          expandOnClick={this.expandOnClick}
-          categoryFilter={categoryFilter}
-          removeFilter={this.removefilterOnClick}
-        />
+        <div className={'posts'}>
+          <div className={'inner'}>
+            <ul className={'list'}>
+              {posts && posts.map((post, i) => (
+                <ListItem
+                  key={i}
+                  post={post}
+                  categoryFilter={null}
+                  showLayout={showLayout}
+                />
+              ))}
+            </ul>
+          </div>
+        </div>
         <style jsx>{`
           .box {
             transform: translate3d(0, 0, 0);
@@ -45,6 +48,16 @@ class SimplePostList extends React.Component {
             .box {
               padding: ${theme.space.layoutPadding.l};
             }
+          }
+          .posts {
+            left: 0px;
+            top: 0px;
+            width: 100%;
+          }
+          .list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
           }
         `}</style>
       </div>
