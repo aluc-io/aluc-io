@@ -20,6 +20,6 @@ Docker 와 이를 적용한 DevOps 환경은 어떤 모습일지 겸사겸사 �
   to Kubernetes][kube_slide] 에 감명받아 굉장히 많이 카피했습니다.
 
 [subicura]: https://subicura.com/
-[slide]: //aluc.io/slide-docker-devops/
+[slide]: https://aluc.io/slide/docker-devops/
 [remarkjs]: https://remarkjs.com/
 [kube_slide]: https://subicura.com/remark/kubernetes-intro.html
