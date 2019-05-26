@@ -32,6 +32,7 @@ jobs:
           root: .
           paths:
             - public
+            - contents/slide
 
   s3copy:
     working_directory: /home/circleci/repo
@@ -47,7 +48,7 @@ jobs:
           aws --version
           aws s3 rm s3://$ALUCIO_S3BUCKET_NAME/$S3PREFIX --recursive
           aws s3 cp public s3://$ALUCIO_S3BUCKET_NAME/$S3PREFIX --recursive
-          aws s3 cp slide s3://$ALUCIO_S3BUCKET_NAME/$S3PREFIX/slide/ --recursive
+          aws s3 cp contents/slide s3://$ALUCIO_S3BUCKET_NAME/$S3PREFIX/slide/ --recursive
 
   sls_deploy:
     working_directory: /home/circleci/repo
@@ -108,7 +109,7 @@ workflows:
       - s3copy:
           filters:
             tags: { only: /.*/ }
-            branches: { only: 'master' }
+            branches: { only: ['master','slide/docker-devops'] }
           requires:
             - gatsby_build
       - sls_deploy:
