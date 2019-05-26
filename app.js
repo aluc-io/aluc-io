@@ -17,6 +17,7 @@ app.use('/version.json', (req, res) => {
 })
 
 app.use('/', (req, res) => {
+  console.log('req.path:' + req.path)
   const s3Path =
         /^\/\d\d\d\d-\d\d-\d\d-/.test(req.path) ? join(req.path, 'index.html')     // posts
       : req.path.split('/')[0] === 'slide'      ? join(req.path, 'index.html')
