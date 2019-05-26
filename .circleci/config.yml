@@ -47,6 +47,7 @@ jobs:
           aws --version
           aws s3 rm s3://$ALUCIO_S3BUCKET_NAME/$S3PREFIX --recursive
           aws s3 cp public s3://$ALUCIO_S3BUCKET_NAME/$S3PREFIX --recursive
+          aws s3 cp slide s3://$ALUCIO_S3BUCKET_NAME/$S3PREFIX/slide/ --recursive
 
   sls_deploy:
     working_directory: /home/circleci/repo
@@ -102,12 +103,17 @@ workflows:
   build_s3copy_slsdeploy:
     jobs:
       - gatsby_build:
-          filters: { tags: { only: /.*/ }}
+          filters:
+            tags: { only: /.*/ }
       - s3copy:
-          filters: { tags: { only: /.*/ }}
+          filters:
+            tags: { only: /.*/ }
+            branches: { only: 'master' }
           requires:
             - gatsby_build
       - sls_deploy:
-          filters: { tags: { only: /.*/ }}
+          filters:
+            tags: { only: /.*/ }
+            branches: { only: 'master' }
           requires:
             - s3copy
