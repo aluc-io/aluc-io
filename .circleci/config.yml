@@ -89,8 +89,8 @@ jobs:
           echo $SLS_APIGW_ROOT_RESOURCE_ID
           echo $SLS_APIGW_PROXY_RESOURCE_ID
 
-          npx sls package --package build
-          npx sls deploy --package build
+          npx sls package --package build --verbose
+          npx sls deploy --package build --verbose
       - save_cache:
           paths:
             - .terraform
