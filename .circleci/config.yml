@@ -108,7 +108,7 @@ workflows:
       - s3copy:
           filters:
             tags: { only: /.*/ }
-            branches: { only: 'master' }
+            branches: { only: ['master','slide/docker-devops'] }
           requires:
             - gatsby_build
       - sls_deploy:
