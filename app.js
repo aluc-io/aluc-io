@@ -20,8 +20,7 @@ app.use('/', (req, res) => {
   console.log('req.path:' + req.path)
   const s3Path =
         /^\/\d\d\d\d-\d\d-\d\d-/.test(req.path) ? join(req.path, 'index.html') // posts
-      : req.path === '/slide/docker-devops'     ? join(req.path, 'index.html')
-      : /^\/slide\//.test(req.path)             ? join(req.path, 'index.html')
+      : req.path === '/slide/docker-devops/'    ? join(req.path, 'index.html')
       : /^\/search/.test(req.path)              ? join(req.path, 'index.html')
       : /^\/about-me/.test(req.path)            ? join(req.path, 'index.html')
       : /^\/qr/.test(req.path)                  ? join('/about-me', 'index.html')
