@@ -6,11 +6,16 @@
     <link href="./style.css" rel="stylesheet" type="text/css">
     <link href="./lato.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato|Nanum+Gothic" rel="stylesheet">
+    <meta property="og:url" content="http://aluc.io/slide-docker-devops/"/>
+    <meta property="og:image" content="https://en.gravatar.com/userimage/96904320/42959f5e4c7438107c4d16a223bd2fb7.jpg?size=500"/>
+    <meta property="og:title" content="Docker & DevOps" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="Docker & DevOps" />
     <style>
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
       @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
       @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
-      @import url(https://fonts.googleapis.com/earlyaccess/notosanskr.css);
+      @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
       .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
     </style>
   </head>
@@ -20,53 +25,184 @@
 layout: false
 class: inverse
 
-# DevOps & Docker
-### 데브옵스와 도커
+# Docker & DevOps
+
+### 도커와 데브옵스
 
 .logo-wrapper.right.right-bottom.list-unstyled[
-- 유 병화
-- Media Service Group
-- bh23.yoo@samsung.com
+- [http://aluc.io](http://aluc.io)
+- [me@aluc.io](mailto:me@aluc.io)
 ]
 
 ---
 
-1. **개발**과 **운영**의 서로 다른 목표
-1. **Cloud** 의 등장
-1. DevOps란?
-1. 갤럭시 앱스 현재 구조
-1. **Docker** 와 **Container orchestration**
-1. DevOps 적용시 갤럭시 앱스 예상 구조
-1. DevOps 의 **조직** **문화** **도구** **철학**
+# $ whoami
 
-.footnote[.text[**데브옵스**에 대해 갤럭시 앱스 서버의 사례를 들어 살펴봅시다]]
+.left-half[
+```
+{
+  nickname: 'aluc',
+  site: 'http://aluc.io',
+  email: 'me@aluc.io',
+}
+```
+]
+
+.right-half.list-unstyled[
+  ![ops](img/avatar.jpg)
+  .center[**aluc**]
+]
 
 ---
 
-## 개발은 개발팀이, 운영은?
+# Table of Contents
 
-- 네트워크 엔지니어 or 시스템 엔지니어가 기술쪽을 담당
+1. Docker
+1. Dev vs Ops
+1. 전통적인 환경에 DevOps(Docker) 적용
+1. DevOps 란?
 
-### 갤럭시 앱스는
+.footnote[.text[구체적인 사례와 함께 **Docker** 와 **DevOps** 에 대해 알아봅시다]]
 
-- 미디어 서비스 그룹의 스토어 개발 파트가 **개발**
-- Cloud 운영그룹의 [TODO] 시스템 운영 파트가 **운영**
+---
 
-.footnote[.text[서비스 개발을 했으면 누군가는 운영을 해야합니다]]
+class: middle
+
+.center.width-img-40[![docker](./img/docker-official.svg)]
+
+.footnote[.text[**Docker**는 리눅스 **컨테이너** 기술로 **격리된 애플리케이션 실행환경**을 제공해 주는 툴입니다]]
+
+---
+
+# What is the Container?
+
+![container](./img/container.png)
+
+.footnote[.text[네! 이런 **컨테이너** 에서 따온 겁니다. 서로 격리된 컨테이너 안에 실행 가능한 애플리케이션이 들어있습니다]]
+
+---
+
+# Isolation
+
+.margin-top-3em.center[![docker](./img/isolation.png)]
+
+.footnote[.text[**격리**는 서버 한대에 동시에 여러 애플리케이션을 실행 시킬때 유용합니다]]
+
+---
+
+# VM vs Container
+
+.center[![docker](./img/vm-vs-container.png)]
+
+.footnote[.text[**도커**가 사용하는 **컨테이너**는 기존 가상머신과 비교했을때 **경량**이고 **성능도 우수**합니다]]
+
+---
+
+class: page-group-img-without-header-2
+
+![dockerhub](./img/Docker_Pulls.jpg)
+
+.footnote[.text[또 누구라도 도커 이미지를 빌드하여 **도커 허브**에 올릴 수 있는데 앱 배포 과정도 크게 개선되었습니다]]
+
+---
+
+class: page-group-img-without-header-2
+
+![dockerhub](./img/Docker_Pulls2.jpg)
+
+.footnote[.text[이제는 **도커**를 못 들어본 사람이 없을 정도로 많이 쓰이고 사실상 컨테이너 툴의 표준이 되었습니다]]
+
+---
+
+class: middle
+
+# Docker
+# Build, Ship, and Run Any App, Anywhere
+
+.footnote[.text[앱 실행에 필요한 모든 것을 담아 **이미지**로 만들고 **업로드** 하고 어디서든 **컨테이너** 형태로 구동 시킵니다]]
+
+---
+
+class: middle
+
+# Build
+
+```
+$ docker build -t my-name/my-awesome-server:v1 .
+```
+
+.footnote[.text[**프로그램 언어**나 **프레임워크**에 관계 없이 뭐든지 **도커 이미지**로 만들 수 있고]]
+
+---
+
+class: middle
+
+# Ship
+
+```
+$ docker push my-name/my-awesome-server:v1
+```
+
+.footnote[.text[원하는 이미지 저장소에 업로드(**Push**) 하고]]
+
+---
+
+class: middle
+
+# Run
+
+```
+$ docker run my-name/my-awesome-server:v1
+```
+
+.footnote[.text[Push 된 **이미지**를 어디서든 내려받아 **컨테이너**로 즉시 실행합니다]]
+
+---
+
+class: middle, center
+
+# DEMO
+
+.footnote[.text[잠시 데모를 보신 후 다음 장 부터는 **데브옵스** 에 대해 알아보겠습니다]]
+
+---
+
+class: page-group-margin-after-h1
+
+# Development vs Operations
+
+.left-half[
+### 개발팀
+- SW 엔지니어 (프로그래머)
+]
+
+.right-half[
+### 운영팀
+- 네트워크 엔지니어
+- 시스템 엔지니어
+]
+
+.footnote[.text[제품을 만들어 비지니스 하기 위해 누군가는 **개발**을 누군가는 **운영**을 해야합니다]]
+
+---
+
+background-image: url(./img/dev-vs-ops.jpg)
+
+.footnote[.text[Dev 와 Ops 를 소개합니다]]
 
 ---
 
 class: h1-has-margin-bottom, center-content
 
-# DEV vs OPS 숙명적 충돌
+# Dev 와 Ops 의 숙명적 충돌
 
-개발자들은 **변경**된 코드를 **빠르게** 서비스에 적용하기를 원함
+**Dev**는 **변경**된 코드를 **빠르게** 서비스에 적용하기를 원함
 
 VS
 
-운영자들은 **안정적**으로 서비스를 **운영**하기를 원함
+**Ops**는 **안정적**으로 서비스를 **운영**하기를 원함
 
-.footnote[.text[그리고 이 개발팀과 운영팀은 서로 상충되는 목표를 가집니다]]
+.footnote[.text[그리고 이 **Dev** 와 **Ops** 는 서로 상충되는 목표를 가지는 것 처럼 보입니다]]
 
 ---
 
@@ -74,10 +210,11 @@ VS
 
 .left-half.list-unstyled[
   .speech-bubble[
-  - 전 갤럭시 앱스 개발자에요.
+  - 전 서비스 개발자에요.
   - 유저에게 멋진 기능을 보여줄래요~
   ]
-  - ![cat](img/warrior-cat-coloring-pages2.jpg)
+  ![dev](img/dev.png)
+  .center[**Dev**]
 ]
 
 .right-half.list-unstyled[
@@ -85,10 +222,8 @@ VS
   - 전 시스템 운영 엔지니어에요.
   - 안정적인 서비스를 책임져요~
   ]
-
-  .img[ 
-  - ![cat](img/bulldog-coloring-pages8-edited.jpg)
-  ]
+  ![ops](img/ops.png)
+  .center[**Ops**]
 ]
 
 .footnote[.text[개발과 운영의 입장을 가상의 대화를 통해 알아봅시다]]
@@ -102,7 +237,8 @@ VS
   - 새로운 기능이 추가 되었습니다.
   - 정말 멋진 기능이고 유저가 좋아할겁니다!
   ]
-  - ![cat](img/warrior-cat-coloring-pages2.jpg)
+  ![dev](img/dev.png)
+  .center[**Dev**]
 ]
 
 .right-half.list-unstyled[
@@ -110,9 +246,8 @@ VS
   - 안정성이 먼저 입니다.
   - 새 기능이 문제 없는지 충분히 검증 안되면 서비스 못나갑니다.
   ]
-.img[ 
-  - ![cat](img/bulldog-coloring-pages8-edited.jpg)
-  ]
+  ![ops](img/ops.png)
+  .center[**Ops**]
 ]
 ---
 
@@ -123,7 +258,8 @@ VS
   - 엄청 중요한 패치입니다.
   - 최대한 빨리 적용해서 고쳐야 합니다.
   ]
-  - ![cat](img/warrior-cat-coloring-pages2.jpg)
+  ![dev](img/dev.png)
+  .center[**Dev**]
 ]
 
 .right-half.list-unstyled[
@@ -131,10 +267,8 @@ VS
   - 그러게 왜 버그를 만들어요.
   - 지금 패치하면 스케쥴 다 꼬입니다. 다음주에 하시죠.
   ]
-
-  .img[ 
-  - ![cat](img/bulldog-coloring-pages8-edited.jpg)
-  ]
+  ![ops](img/ops.png)
+  .center[**Ops**]
 ]
 ---
 
@@ -145,7 +279,8 @@ VS
   - 이번 업데이트에 새로운 모듈을 써서 성능을 개선했습니다.
   - 이것 저것 설치해주세요.
   ]
-  - ![cat](img/warrior-cat-coloring-pages2.jpg)
+  ![dev](img/dev.png)
+  .center[**Dev**]
 ]
 
 .right-half.list-unstyled[
@@ -153,10 +288,8 @@ VS
   - 서비스에 문제 생기면 어쩌려구요.
   - 다른 서비스도 영향 받을 수 있습니다. 쓰던거 쓰세요.
   ]
-
-  .img[ 
-  - ![cat](img/bulldog-coloring-pages8-edited.jpg)
-  ]
+  ![ops](img/ops.png)
+  .center[**Ops**]
 ]
 
 ---
@@ -168,25 +301,68 @@ VS
   - 후....... 답답한 운영!
   - 복지부동에다 새로운 기술의 중요성을 몰라!
   ]
-  - ![cat](img/warrior-cat-coloring-pages2.jpg)
+  ![dev](img/dev.png)
+  .center[**Dev**]
 ]
 
 .right-half.list-unstyled[
   .speech-bubble[
   - 그렇게 기술에 자신 있으면 버그나 좀 줄이시지!
-  - 정애대응 님이 하실거임?
+  - 장애대응 님이 하실거임?
   ]
-
-  .img[ 
-  - ![cat](img/bulldog-coloring-pages8-edited.jpg)
-  ]
+  ![ops](img/ops.png)
+  .center[**Ops**]
 ]
 
 ---
 
-background-image: url(./img/cat-vs-dog.jpg)
+background-image: url(./img/fight-dev-ops.png)
+background-size: cover
+background-position: 0px 0px
 
-# 개발과 운영 입장
+.footnote[.text[누구의 잘못이고 이들은 왜 충돌할 수 밖에 없는 걸까요?]]
+
+---
+
+class: page-group-only-title, middle, center
+
+~~**Dev**는 **변경**된 코드를 **빠르게** 서비스에 적용하기를 원함~~
+
+~~**Ops**는 **안정적**으로 서비스를 **운영**하기를 원함~~
+
+The goal of both **Dev** and **Ops** is to **enable** the business
+
+.footnote[.text[회사 경영자로 빙의(憑依)하여 생각해보면 이 둘의 목표는 단지 **비지니스**를 **가능**하게 하는 것이죠]]
+
+---
+
+class: page-group-only-title, middle, center
+
+# ["세상이 달라졌습니다"![link](./img/link.svg)][devops_slide]
+
+.footnote[.text[문제는 비지니스엔 항상 변화가 필요하다는 것입니다]]
+
+---
+
+background-image: url(./img/fight-dev-ops.png)
+background-size: cover
+background-position: 0px 0px
+
+.footnote[.text[그리고 이 변화는 높은 확률로 서비스 장애의 근본 원인이었던 것 이었죠]]
+
+---
+
+class: h1-has-margin-bottom, center-content
+
+# Two options
+
+서비스의 안정성을 위해 변화를 **거부**하던지
+
+or
+
+**ㅇㅇ**를 바꿔 변화가 필요한 만큼 자주 일어나는 것을 **허용**할 것인지
+
+.footnote[.text[이제 두가지 옵션이 있습니다. 깊은 고민에 빠져있을 때 구원자가 나타났습니다]]
 
 ---
 
@@ -196,7 +372,7 @@ class: page-cloud
 
 ![cloud](./img/cloud.png)
 
-.footnote[.text[**누구나 쉽게** 인프라 구축을 가능케 한 **클라우드** 의 등장은 이러한 구도에 변화를 주었습니다]]
+.footnote[.text[**누구나 쉽게** 인프라 구축을 가능케 한 **클라우드** 의 등장은 **Dev** vs **Ops** 충돌 구도에 변화를 주었습니다]]
 
 ---
 
@@ -206,34 +382,31 @@ class: page-cloud
 # Cloud 환경
 - 클릭 몇번에 또는 API 콜을 통해 인프라 자원 생성 및 설정 가능
 
-.footnote[.text[**SW 엔지니어** 가 운영에 뛰어들었고 개발과 운영팀 롤의 경계가 모호해졌습니다]]
+.footnote[.text[**SW 엔지니어**가 운영판에 뛰어들었고 개발과 운영 롤의 경계가 모호해졌습니다]]
 
 ---
 
-# DevOps 란?
+# DevOps 의 등장
 
 ![loop](./img/devops-loop.png)
 
-.footnote[.text[**데브옵스**란 제품 개발 중 발생하는 문제를 **엔지니어링의 힘**으로 해결하는 것을 의미합니다]]
+.footnote[.text[이 SW 엔지니어들이 하는 일을 **데브옵스**라 부르기 시작했고 뭔가 만병통치약 같은 느낌이 듭니다]]
 
 ---
 
-# DevOps 정의
+# Traditional Enterprise JavaBeans Service
 
-.list-unstyled[
-- 서비스를 신속하게 시장에 제공 할 수 있도록
-- **조직**의 역량을 향상시키는 **문화**, **철학**, **방식** 및 **도구**의 **조합**
-]
+- **Dev:** 개발
+- **Dev:** 소스코드를 Build 하여 WAR 패키징
+- **Dev:** WAR 파일을 S3 에 업로드
 
-.footnote[.text[또한 **데브옵스**에는 **조직** **문화** **철학** **방식** **도구** 의 변화 이 모든 것이 포함 됩니다]]
+- ---
 
----
+- **Ops:** S3 의 WAR 파일을 각각의 인스턴스에 복사
+- **Ops:** WAR 파일을 JBoss 서버에 배포
+- **Ops:** Apache Web 서버를 관리
 
-# GalaxyApps 인프라
-
-- 전통적인 개발방식과 운영방식으로 운영되고 있는 서비스
-
-.footnote[.text[DevOps 를 적용한다면 어떤 것들을 개선 할 수 있을지 갤럭시앱스의 인프라 구조를 살펴봅시다]]
+.footnote[.text[도대체 **데브옵스**가 뭘까요? 전통적인 환경과 비교하며 알아봅시다]]
 
 ---
 
@@ -241,7 +414,7 @@ class: page-group-keynote
 
 .slideImg[![img](./img/devops/devops.001.png)]
 
-.footnote[.text[WEB - WAS - DB Tier 로 구성되어 있습니다. 인스턴스 안에 서버들을 띄워 볼까요?]]
+.footnote[.text[WEB - WAS - DB 계층으로 구성되어 있습니다. 인스턴스 안에 서버들을 띄워 볼까요?]]
 
 ---
 
@@ -303,9 +476,9 @@ class: page-group-keynote
 
 class: page-group-keynote
 
-.slideImg[![img](./img/devops/devops.007.png)]
+.slideImg[![img](./img/devops/devops.008.png)]
 
-.footnote[.text[**상태의 변화**는 관리 포인트를 증가 시키며 이렇게 **상태 관리**가 필요한 자원을 **Stateful** 자원이라고 합니다]]
+.footnote[.text[이러한 구조가 여러 샤드(Shard)로 나뉘어져 있고 이제 관리해야할 **상태**는 더 많아졌습니다]]
 
 ---
 
@@ -313,31 +486,23 @@ class: page-group-keynote
 
 .slideImg[![img](./img/devops/devops.008.png)]
 
-.footnote[.text[이러한 구조가 중국을 포함 총 6개 사드로 나뉘어져 있고 이제 관리해야할 **상태**는 더 많아졌습니다]]
-
----
-
-class: page-group-keynote
-
-.slideImg[![img](./img/devops/devops.008.png)]
-
-.footnote[.text[이런 복잡한 환경에서 실수 없이 운영하기 위해서는 숙련된 운영자가 보수적으로 접근해야합니다]]
+.footnote[.text[이런 복잡한 환경은 이제 숙련된 운영자들의 섬세한 작업이 필요한 영역이 되었습니다]]
 
 ---
 
 # 개선 포인트
 
-1. 인스턴스의 구성을 종류별로 관리해야함 (인스턴스가 **Stateful** 자원)
+1. 관리해야할 상태(**State**) 가 많다 -> 휴먼에러 포인트가 많다
 1. WAS 서버가 추가, 제거 될 때마다 WEB 의 상태(**State**)가 변경되어야함
-1. 관리해야할 상태(**State**) 가 많으며 휴먼에러 포인트가 많다
 1. 상태(**State**)가 많아 인프라 구조를 유연하게 변경 & 개선하기 어렵다
 1. 복잡한 환경이 되어 자주 배포를 할 수 없다 (**배포 주기가 길다**)
-1. ★  의 트래픽이 증가하여 **B 인스턴스**를 추가했을때 ◆ 도 함께 증가한다 (**비효율**)
+1. ★  의 트래픽이 증가하여 **B 인스턴스를 추가**했을때 ◆ 도 함께 증가한다 (**비효율**)
 1. 트래픽 상황의 변화에 따라 어떤 인스턴스는 놀고 어떤 인스턴스는 바쁘다 (**비효율**)
 
-.footnote[.text[살펴본 간단한 케이스에서도 여러가지 개선점들을 볼 수 있었습니다]]
+.footnote[.text[**DevOps** 가 적용되지 않은 환경을 살펴본 SW 엔지니어들이 발견한 개선점 들입니다]]
 
 ---
+
 
 # 프로그래머
 
@@ -345,7 +510,7 @@ class: page-group-keynote
 
 .center.full-width-img[![programmer](./img/programmer.png)]
 
-.footnote[.text[SW 엔지니어들은 그들이 해오던 방식으로 문제를 해결하기 시작했습니다]]
+.footnote[.text[**SW 엔지니어**들은 그들이 해오던 방식으로 문제를 해결하기 시작했습니다]]
 
 ---
 
@@ -353,7 +518,7 @@ class: page-group-keynote
 
 .center.full-width-img[![programmer](./img/main-qimg-6ca8588397df22f65dbd126d55550651-c.jpg)]
 
-.footnote[.text[툴들은 프로그램 개발에서부터 배포 관리 모니터링 까지 편리하게 자동화 하였고]]
+.footnote[.text[개발과 운영에 필요한 툴들을 만들고 사용했습니다]]
 
 ---
 
@@ -361,79 +526,8 @@ class: page-group-keynote
 
 .center.full-width-img-10[![programmer](./img/periodic-table-of-devops-tools-v3.png)]
 
-.footnote[.text[제품을 더 안정적이고 빠르게 시장에 출시 할 수 있게 개발 운영 사이클 전 과정을 커버합니다]]
+.footnote[.text[이러한 툴들은 특성에 따라 개발/운영 사이클 전 과정을 커버합니다]]
 
----
-
-class: middle
-
-.center.width-img-40[![docker](./img/docker-official.svg)]
-
-.footnote[.text[가장 영향력 있는 툴 중의 하나는 2013년 3월에 등장한 Docker 였습니다]]
-
----
-
-# VM vs Container
-
-![container](./img/containers-101-2x-1.png)
-
-.footnote[.text[Docker 는 리눅스 **컨테이너** 기술을 사용하여 애플리케이션 실행 환경을 **격리**하였습니다]]
-
----
-
-# 컨테이너 가상화
-
-.float-left-img[
-  ![container](./img/1_ZwUnMQmVdn9Lrw0DLCJyFg.png)
-  ![container](./img/1_rddkqsIT9cADA7ZqwwwysQ.png)
-]
-
-.footnote[.text[VM 에 비해 가볍고 성능도 우수한 컨테이너는 SW **배포**와 **구동** 방식에 큰 변화를 주었습니다]]
-
----
-
-class: middle
-
-# Docker
-# Build, Ship, and Run Any App, Anywhere
-
-.footnote[.text[애플리케이션 실행에 필요한 모든 것을 담아 **이미지** 를 만들고 어디서든 **컨테이너** 형태로 구동 시킵니다]]
-
----
-
-class: middle
-
-# Build
-
-```
-$ docker build -t https://my-docker-registry.com/my-awesome-server:v1 .
-```
-
-.footnote[.text[**프로그램 언어**나 **프레임워크**에 관계 없이 뭐든지 **도커 이미지**로 만들 수 있고]]
-
----
-
-class: middle
-
-# Ship
-
-```
-$ docker push https://my-docker-registry.com/my-awesome-server:v1
-```
-
-.footnote[.text[원하는 이미지 저장소에 저장(**Push**) 하고]]
-
----
-
-class: middle
-
-# Run
-
-```
-$ docker run https://my-docker-registry.com/my-awesome-server:v1
-```
-
-.footnote[.text[Push 된 **이미지**를 어디서든 내려받아 **컨테이너**로 즉시 실행합니다]]
 
 ---
 
@@ -453,173 +547,26 @@ class: page-group-keynote
 
 ---
 
-.inline[![container](./img/docker-container-icon.svg)]
-.inline[![container](./img/docker-container-icon.svg)]
-.inline[![container](./img/docker-container-icon.svg)]
+class: page-group-keynote
 
-.footnote[.text[살펴본 명령어들을 사용해서 컨테이너 2~3개까지는 한땀 한땀 하는 것도 괜찮습니다]]
+.slideImg[![img](./img/devops/devops.011.png)]
 
----
-
-# 갤럭시 앱스 서버 현황
-
-- 약 300 대의 인스턴스
-- 700개 이상의 서버 프로세스 구동 중 = 700개 이상의 컨테이너 필요
-
-.footnote[.text[하지만 서비스의 규모에 따라 보통 수백에서 수천개의 컨테이너가 사용되는데요]]
+.footnote[.text[컨테이너 3~4개까지는 도커 명령어를 사용해서 한땀 한땀 하는 것도 괜찮습니다]]
 
 ---
 
-class: page-many-container-1
+class: page-group-img-without-header-3
+background-image: url(./img/lotsocontainers.jpg)
+background-size: cover
 
-.container[
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-  ![container](./img/docker-container-icon.svg)
-]
+# But... 😱
 
-.footnote[.text[😱]]
+---
+
+class: page-group-img-without-header-3
+background-image: url(./img/container-fail.jpg)
+
+.footnote[.text[까딱하다간 서비스의 장애가 생길 수 있는데요]]
 
 ---
 
@@ -633,29 +580,17 @@ class: page-many-container-1
 
 ---
 
-class: page-orchestration-tools
-
 # Container Orchestration
 
-.mesos[![img](./img/mesos-marathon.png)]
-.kube[![img](./img/kubernetes-logo-1.svg)]
-.rancher[![img](./img/rancher-logo.jpg)]
-.nomad[![img](./img/nomad.svg)]
+.margin-top-3em.center[![contestants](./img/contestants.png)]
 
-.footnote[.text[컨테이너 오케스트레이션 툴은 다수의 컨테이너 배포와 관리를 담당합니다]]
+.footnote[.text[컨테이너 배포와 관리를 자동화 해주는 **컨테이너 오케스트레이션** 툴이 등장하였습니다]]
 
 ---
 
-class: page-kube
+background-image: url(./img/orchestra.jpg)
 
-# kubernetes
-
-.kube[![img](./img/kubernetes-logo-1.svg)]
-
-1주일에 20억개의 컨테이너를 생성하는 **google**이
-컨테이너 배포 시스템으로 사용하던 borg를 기반으로 만든 오픈소스
-
-.footnote[.text[그 중 구글에서 만든 쿠버네티스가 사실상의 표준으로 자리잡고 있습니다]]
+.footnote[.text[연주가들을 지휘하는 오케스트라의 지휘자처럼 오케스트레이션 툴은 **컨테이너**들을 관리합니다]]
 
 ---
 
@@ -681,11 +616,13 @@ web-server:
   count: 3
 ```
 
-.footnote[.text[**선언적 방법**으로 설정을 정의하기만 하면 오케스트레이션 툴이 컨테이너를 자동으로 배포합니다]]
+.footnote[.text[**절차적**인 방법으로 관리했던 컨테이너를 **선언적**인 방법으로 관리 할 수 있게 되었습니다]]
 
 ---
 
 class: page-group-keynote-2
+
+# Container definition
 
 .configure[
 ```
@@ -714,7 +651,7 @@ servers:
 
 .slideImg[![img](./img/devops/devops.009.png)]
 
-.footnote[.text[오케스트레이션 툴이 왼쪽 정의대로 준비된 인스턴스에 컨테이너를 구동시킵니다]]
+.footnote[.text[왼쪽의 **정의 파일**만 있으면 오케스트레이션 툴이 자동으로 컨테이너를 배포 할 수 있습니다]]
 
 ---
 
@@ -747,7 +684,7 @@ servers:
 ```
 ]
 
-.slideImg[![img](./img/devops/devops.011.png)]
+.slideImg[![img](./img/devops/devops.012.png)]
 
 .footnote[.text[**빈 패킹** 기능은 자원 요구 사항 및 기타 제약 조건에 따라 효율적으로 컨테이너를 배치합니다]]
 
@@ -782,7 +719,7 @@ servers:
 ```
 ]
 
-.slideImg[![img](./img/devops/devops.012.png)]
+.slideImg[![img](./img/devops/devops.013.png)]
 
 .footnote[.text[가상 네트워크인 **클러스터** 안에 속한 컨테이너들은 마치 하나의 서버에 있는 것처럼 통신 할 수 있습니다]]
 
@@ -817,48 +754,9 @@ servers:
 ```
 ]
 
-.slideImg[![img](./img/devops/devops.013.png)]
+.slideImg[![img](./img/devops/devops.014.png)]
 
-.footnote[.text[IP 주소 대신 DNS 로 통신하기 때문에 다른 서버의 접속 정보를 관리 할 필요도 없습니다]]
-
----
-
-class: page-group-keynote-2
-
-# Horizontal scaling
-
-.configure[
-```
-environment: PRD
-servers:
-  ⚙️ :
-    image: web-server:v1
-    count: 3
-  ◼:
-    image: store-server:v1.0
-    count: 4
-  ●:
-    image: vas-server:v2.3.2
-    count: 3
-  ★:
-    image: star-server:v2
-    count: 3
-    scaling:
-      cpu-percent: 80
-      max: 10
-      min: 2
-  ♦:
-    image: mktweb-server:v0.8
-    count: 4
-  ▲:
-    image: ureca-server:v5.0.3
-    count: 2
-```
-]
-
-.slideImg[![img](./img/devops/devops.013.png)]
-
-.footnote[.text[선언적인 방법으로 오토 스케일링 설정을 정의해 두면 자동으로 서버를 확장해줍니다]]
+.footnote[.text[IP 주소 대신 **DNS** 로 통신하기 때문에 다른 서버의 접속 정보를 관리 할 필요도 없습니다]]
 
 ---
 
@@ -897,6 +795,45 @@ servers:
 
 .slideImg[![img](./img/devops/devops.014.png)]
 
+.footnote[.text[선언적인 방법으로 오토 스케일링 설정을 정의해 두면 자동으로 서버를 확장해줍니다]]
+
+---
+
+class: page-group-keynote-2
+
+# Horizontal scaling
+
+.configure[
+```
+environment: PRD
+servers:
+  ⚙️ :
+    image: web-server:v1
+    count: 3
+  ◼:
+    image: store-server:v1.0
+    count: 4
+  ●:
+    image: vas-server:v2.3.2
+    count: 3
+  ★:
+    image: star-server:v2
+    count: 3
+    scaling:
+      cpu-percent: 80
+      max: 10
+      min: 2
+  ♦:
+    image: mktweb-server:v0.8
+    count: 4
+  ▲:
+    image: ureca-server:v5.0.3
+    count: 2
+```
+]
+
+.slideImg[![img](./img/devops/devops.015.png)]
+
 .footnote[.text[새롭게 추가된 컨테이너의 접속정보는 오케스트레이션 툴의 DNS 서버에 자동으로 추가됩니다]]
 
 ---
@@ -934,9 +871,9 @@ servers:
 ```
 ]
 
-.slideImg[![img](./img/devops/devops.015.png)]
+.slideImg[![img](./img/devops/devops.016.png)]
 
-.footnote[.text[장애 발생시에는 DNS 서버의 접속정보에서 삭제되어 장애난 컨테이너로 트래픽을 보내지 않게 되며]]
+.footnote[.text[장애 발생시에도 내부 DNS 정보를 업데이트 하여 장애난 컨테이너로 트래픽을 보내지 않게 하며]]
 
 ---
 
@@ -963,7 +900,7 @@ servers:
     scaling:
       cpu-percent: 80
       max: 10
-      min: 5
+      min: 2
   ♦:
     image: mktweb-server:v0.8
     count: 4
@@ -973,17 +910,17 @@ servers:
 ```
 ]
 
-.slideImg[![img](./img/devops/devops.016.png)]
+.slideImg[![img](./img/devops/devops.017.png)]
 
-.footnote[.text[정의된 설정 값을 유지하기 위해 정상 인스턴스에 컨테이너를 띄워 복구합니다]]
+.footnote[.text[정의된 상태를 만족시키기 위해 자동으로 정상 동작하는 인스턴스에 컨테이너를 띄워 복구합니다]]
 
 ---
 
-# Monitoring, Deployment Strategies
+# Monitoring, Deployment Strategies, ...
 
 .bigimg[![img](./img/deployment-strategies.png)]
 
-.footnote[.text[모니터링 기능과 다양한 배포 전략을 통해 **안정성**을 희생시키지 않으면서 **더 자주** 배포 할 수 있습니다]]
+.footnote[.text[그 밖의 여러 기능의 지원으로 **안정성**을 희생시키지 않으면서 **더 자주** 배포 할 수 있습니다]]
 
 ---
 
@@ -991,17 +928,18 @@ servers:
 
 .center[![img](./img/6-graph.png)]
 
-.footnote[.text[도커를 사용하면 제품을 3배 더 빠르게 시장에 출시할 수 있습니다]]
+.footnote[.text[도커를 사용하면 제품을 **3배 더 빠르게** 시장에 출시할 수 있습니다~~라는 설명이 도커 사이트에 있습니다~~]]
 
 ---
 
 
 # Cycle Time
 
-- DevOps 의 주요 **측정 지표**로써 하나의 요건을 발의부터 완료하기까지 걸린 시간
+- DevOps 의 주요 **측정 지표**
+- 하나의 요건이 발의 부터 **고객에게 전달**되어 완료 하기까지 걸린 시간
 - 배포 주기가 짧을 수록 평균 **Cycle time** 이 감소하고 **배치 크기**가 작아짐
 - **Cycle time** 이 작을 수록 고객에게 **가치 전달**이 빨라짐
-- **배치 크기** 가 작을 수록 Rollout/Rollback 의 부담이 감소
+- **배치 크기** 가 작을 수록 **Rollout(배포)/Rollback** 의 부담이 감소
 
 .left-half[
   ![img](./img/cycletime1.png)
@@ -1012,27 +950,74 @@ servers:
   .center[**DevOps**]
 ]
 
-.footnote[.text[자주 배포하면 고객은 만족하고 개발자의 삶은 윤택해집니다]]
+.footnote[.text[**자주 배포**하면 **고객**은 **만족**하고 **개발자**의 삶의 질은 **윤택**해집니다]]
 
 ---
-
-class: middle
-
-# Companies killing it at DevOps
-
-- Amazon, Etsy, Facebook, Flickr, Google, Netflix, Walmart, Nordstrom, Adobe, Flicker
-
-.footnote[.text[제품의 **안정성**과 **품질**을 희생하지 않으면서 하루에 100번 이상 **지속적**으로 **배포** 할 수 있습니다]]
-
----
-
-class: center
 
 # The Solution Delivery Pipeline
 
 .center.img80[![img](./img/solution-s-curve.png)]
 
 .footnote[.text[제품 개발/운영 사이클 전체에 **데브옵스**를 적용하면 충분히 가능한 일 입니다]]
+
+---
+
+class: middle
+
+# Conway's law
+
+- 1967년 프로그래머 멜빈 콘웨이가 제안한 법칙
+- 소프트웨어의 구조는 설계하는 조직의 커뮤니케이션 구조를 따라간다
+
+.footnote[.text[**조직의 구조** 또한 데브옵스 도입시 매우 중요한 요소입니다]]
+
+---
+
+class: page-group-only-title, center
+
+# ["Culture"![link](./img/link.svg)][10deploy_slide]
+
+![finger1](./img/fingerpointing1.png)
+
+.footnote[.text[**문화**도 빼놓을 순 없죠]]
+
+---
+
+class: page-group-only-title, center
+
+# ["Culture"![link](./img/link.svg)][10deploy_slide]
+
+![finger1](./img/fingerpointing2.png)
+
+.footnote[.text[특히 한국의 기업에서 이 문화 바꾸기는 가장 중요하고 동시에 가장 어려운 부분이라 생각합니다]]
+
+---
+
+class: h1-has-margin-bottom, center-content
+
+# Two options
+
+서비스의 안정성을 위해 변화를 **거부**하던지
+
+or
+
+**ㅇㅇ**를 바꿔 변화가 필요한 만큼 자주 일어나는 것을 **허용**할 것인지
+
+.footnote[.text[앞에 나왔던 선택지를 다시 살펴봅시다. ㅇㅇ에 들어 갈 말은 무엇 일까요?]]
+
+---
+
+class: h1-has-margin-bottom, center-content
+
+# Two options
+
+서비스의 안정성을 위해 변화를 **거부**하던지
+
+or
+
+**도구**와 **문화**를 바꿔 변화가 필요한 만큼 자주 일어나는 것을 **허용**할 것인지
+
+.footnote[.text[다른 기업에서는 어떤 선택지를 골랐을까요?]]
 
 ---
 
@@ -1043,7 +1028,7 @@ class: page-group-research
 
 ![research-1](./img/research-1.png)
 
-.footnote[.text[많은 기업들이 데브옵스를 이미 도입하였거나 1년 안에 도입 할 계획을 가지고 있습니다]]
+.footnote[.text[이미 **데브옵스**를 도입 했거나 1년 안에 도입 계획이 있다고 답 한 비율이 **73%** 나 되었습니다]]
 
 ---
 
@@ -1056,13 +1041,16 @@ class: page-group-research
 
 ---
 
-# Conway's law
+class: middle
 
-- 1967년 프로그래머 멜빈 콘웨이가 제안한 법칙
-- 시스템 구조는 설계하는 조직의 커뮤니케이션 구조를 따라간다
-- 조직의 구조가 시스템 아키텍처 설계에 영향을 줌
+# DevOps 란?
 
-.footnote[.text[**조직의 구조** 또한 데브옵스 도입시 매우 중요한 요소입니다]]
+.list-unstyled[
+- 서비스를 신속하게 시장에 제공 할 수 있도록
+- **조직**의 역량을 향상시키는 **문화**, **철학**, **방식** 및 **도구**의 **조합**
+]
+
+.footnote[.text[그리고 오늘날 **데브옵스**는 이렇게 정의됩니다]]
 
 ---
 
@@ -1074,14 +1062,19 @@ class: page-group-research
     - As Is: ㅇ월 ㅇ일 ㅇ 개의 요건이 배포됨
     - To Be: ㅇㅇㅇ 요건이 ㅇ월 ㅇ일 까지 배포됨
 - DevOps 툴 세미나 및 DevOps 엔지니어 양성
+- 생산성을 증가시키고 문화에 영향을 주는 DevOps 툴 부터 도입하기(Git, Docker)
 
-.footnote[.text[기존의 서비스를 안정적으로 운영하면서 데브옵스를 시작 한다면 어디서 부터해야할까요]]
+.footnote[.text[데브옵스를 처음 시작 한다면 무엇을 어디서에서부터 해야 할지 생각해 봤습니다]]
 
 ---
 
 class: page-group-reference
 
 # References
+- https://subicura.com/2017/01/19/docker-guide-for-beginners-1.html
+- https://subicura.com/remark/kubernetes-intro.html
+- https://www.youtube.com/watch?v=LdOe18KhtT4
+- https://www.slideshare.net/chingu94/devops-62712241
 - https://www.slideshare.net/ds5apn/dev-ops-2013041801pdf
 - https://www.slideshare.net/taehyunkim73700/ndc17-devops-devops-6
 - https://www.slideshare.net/ssuser2f0173/devops-41731364
@@ -1096,6 +1089,12 @@ class: page-group-reference
 - https://www.docker.com/why-docker
 - https://coveralls.io/
 - http://www.toad.co.kr/sub/sub04_02.php?mode=view&idx=49
+- https://www.youtube.com/watch?v=F1-UEIG7u5g
+- https://www.facebook.com/jtbcnews/videos/1891617474231161/
+
+---
+
+class: page-group-reference
 
 # Image source
 - https://best-coloring.com/
@@ -1104,15 +1103,52 @@ class: page-group-reference
 - https://cloud.google.com/containers/?authuser=0&hl=ko
 - https://xebialabs.com/the-ultimate-devops-tool-chest/
 - https://techbeacon.com/10-companies-killing-it-devops
-- https://subicura.com/remark/kubernetes-intro.html#15
 - https://medium.com/@neonrocket/devops-is-a-culture-not-a-role-be1bed149b0
 - https://ieeexplore.ieee.org/document/7883285/
+- https://sherryummen.in/tag/docker/
+- https://www.slideshare.net/codedellemc/code-webinar-kubernetes-overview-and-16-update-with-matthew-de-lio
+- https://medium.com/devopslinks/an-overall-view-on-docker-ecosystem-containers-moby-swarm-linuxkit-containerd-kubernetes-5e4972a6a1e8
+- https://www.slideshare.net/KarlIsenberg/container-orchestration-wars-2017-edition
+- https://feathericons.com/
+- https://ds5apn.wordpress.com/2014/12/28/backup-dev-kthcorp-com-devops-new-culture/
 
 ---
 
 class: middle, center
 
 # Thank you
+
+---
+
+### 조지다
+
+&lt;iframe width=&quot;740&quot; height=&quot;452&quot; src=&quot;https://www.youtube.com/embed/VS03V1x-Pfo?start=10&amp;end=38&quot; frameborder=&quot;0&quot; allow=&quot;autoplay; encrypted-media&quot; allowfullscreen&gt;&lt;/iframe&gt;
+
+.footnote[.text[문화, 철학... 이런 **데브옵스**의 정의가 너무 추상적이라 다른 말이 없을까 한번 생각해 보았습니다]]
+
+---
+
+class: middle
+
+.header-with-tiny[
+  저에게 더 와 닿는
+  # DevOps 란?
+]
+
+.list-unstyled[
+- 서비스 개발/운영시의 **비지니스 요구사항**을
+- 사람을 조져서 뽑아내는 것이 아닌 **엔지니어링의 힘**으로 해결해나가는 것
+]
+
+---
+
+class: middle, center
+
+# Thank you
+# Thank you
+
+[devops_slide]: https://www.slideshare.net/chingu94/devops-62712241
+[10deploy_slide]: https://www.slideshare.net/jallspaw/10-deploys-per-day-dev-and-ops-cooperation-at-flickr/71-Thank_you
 
     </textarea>
     <script>
