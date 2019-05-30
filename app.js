@@ -4,6 +4,7 @@ import * as AWS from 'aws-sdk'
 import morgan from 'morgan'
 import mime from 'mime-types'
 import slash from 'slash'
+import { read } from 'gray-matter';
 
 const { ALUCIO_S3BUCKET_NAME, S3PREFIX, GIT_REVISION } = process.env
 
@@ -18,8 +19,12 @@ app.use('/version.json', (req, res) => {
 
 app.use('/', (req, res) => {
   console.log('req.path:' + req.path)
+  if (req.path === '/slide/docker-devops') {
+    res.redirect('/slide/docker-devops/')
+    return
+  }
   const s3Path =
-        /^\/\d\d\d\d-\d\d-\d\d-/.test(req.path) ? join(req.path, 'index.html') // posts
+        /^\/\d\d\d\d-\d\d-\d\d-/.test(req.path)      ? join(req.path, 'index.html') // posts
       : req.path === '/slide/docker-devops/'    ? join(req.path, 'index.html')
       : /^\/search/.test(req.path)              ? join(req.path, 'index.html')
       : /^\/about-me/.test(req.path)            ? join(req.path, 'index.html')
@@ -34,7 +39,8 @@ app.use('/', (req, res) => {
 
   const contentType = mime.contentType(basename(s3Path))
   console.log('contentType:' + contentType)
-  if (contentType.split('/')[0] === 'image') {
+  const type = contentType.split('/')[0]
+  if (type === 'image' || type === 'font') {
     return res.redirect(s3.getSignedUrl('getObject', params))
   }
 
