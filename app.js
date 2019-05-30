@@ -19,8 +19,8 @@ app.use('/version.json', (req, res) => {
 app.use('/', (req, res) => {
   console.log('req.path:' + req.path)
   const s3Path =
-        /^\/\d\d\d\d-\d\d-\d\d-/.test(req.path) ? join(req.path, 'index.html') // posts
-      : req.path === '/slide/docker-devops/'    ? join(req.path, 'index.html')
+        /^\/\d\d\d\d-\d\d-\d\d-/.test(req.path)      ? join(req.path, 'index.html') // posts
+      : /^\/slide\/docker-devops\/?$/.test(req.path) ? join(req.path, 'index.html')
       : /^\/search/.test(req.path)              ? join(req.path, 'index.html')
       : /^\/about-me/.test(req.path)            ? join(req.path, 'index.html')
       : /^\/qr/.test(req.path)                  ? join('/about-me', 'index.html')
@@ -34,7 +34,8 @@ app.use('/', (req, res) => {
 
   const contentType = mime.contentType(basename(s3Path))
   console.log('contentType:' + contentType)
-  if (contentType.split('/')[0] === 'image') {
+  const type = contentType.split('/')[0]
+  if (type === 'image' || type === 'font') {
     return res.redirect(s3.getSignedUrl('getObject', params))
   }
 
