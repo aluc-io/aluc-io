@@ -34,7 +34,8 @@ app.use('/', (req, res) => {
 
   const contentType = mime.contentType(basename(s3Path))
   console.log('contentType:' + contentType)
-  if (contentType.split('/')[0] === 'image') {
+  const type = contentType.split('/')[0]
+  if (type === 'image' || type === 'font') {
     return res.redirect(s3.getSignedUrl('getObject', params))
   }
 
