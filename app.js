@@ -17,9 +17,10 @@ app.use('/version.json', (req, res) => {
 })
 
 app.use('/', (req, res) => {
+  console.log('req.path:' + req.path)
   const s3Path =
-        /^\/\d\d\d\d-\d\d-\d\d-/.test(req.path) ? join(req.path, 'index.html')     // posts
-      : req.path.split('-')[0] === 'slide'      ? join(req.path, 'index.html')
+        /^\/\d\d\d\d-\d\d-\d\d-/.test(req.path) ? join(req.path, 'index.html') // posts
+      : req.path === '/slide/docker-devops/'    ? join(req.path, 'index.html')
       : /^\/search/.test(req.path)              ? join(req.path, 'index.html')
       : /^\/about-me/.test(req.path)            ? join(req.path, 'index.html')
       : /^\/qr/.test(req.path)                  ? join('/about-me', 'index.html')
@@ -28,13 +29,16 @@ app.use('/', (req, res) => {
       : req.path === '/'                        ? 'index.html'
       : req.path
 
+  console.log('s3Path:' + s3Path)
   const params = { Bucket: ALUCIO_S3BUCKET_NAME, Key: slash(join(S3PREFIX, s3Path)) }
 
   const contentType = mime.contentType(basename(s3Path))
+  console.log('contentType:' + contentType)
   if (contentType.split('/')[0] === 'image') {
     return res.redirect(s3.getSignedUrl('getObject', params))
   }
 
+  console.log('params:' + JSON.stringify(params))
   s3.getObject(params, (err, data) => {
     if (err) return res.status(404).send(`PAGE NOT FOUND: ${params.Key}`)
 
