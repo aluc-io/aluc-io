@@ -44,6 +44,7 @@
     "gatsby-transformer-remark": "^2.3.1",
     "gatsby-transformer-sharp": "^2.1.15",
     "lodash": "^4.17.10",
+    "maxmind": "2",
     "mime-types": "^2.1.24",
     "morgan": "^1.9.1",
     "postcss-nested": "^3.0.0",

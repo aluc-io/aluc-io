@@ -6,6 +6,7 @@ const packageJson = require('./package.json')
 const _ = require('lodash')
 
 console.log(slsw.lib.entries)
+const MMDB_DIR = path.dirname(process.env.ALUCIO_MMDB_PATH)
 
 module.exports = {
   entry: _.isEmpty(slsw.lib.entries) ? { handler: './handler.js'} : slsw.lib.entries,
@@ -39,6 +40,9 @@ module.exports = {
   plugins: [
     new CopyPlugin([
       { from: 'static/favicon', to: 'static/favicon' },
+    ]),
+    new CopyPlugin([
+      { from: MMDB_DIR, to: MMDB_DIR }
     ]),
   ],
   target: 'node',

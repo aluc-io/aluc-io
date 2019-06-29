@@ -12,3 +12,8 @@ public
 /.terraform
 
 *.log
+
+
+/GeoLite2-City_*/
+
+*.tar.gz
