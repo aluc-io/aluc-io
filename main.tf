@@ -57,7 +57,7 @@ resource "aws_cloudfront_distribution" "main" {
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
-    default_ttl            = 300
+    default_ttl            = 30
     max_ttl                = 86400
   }
 
@@ -101,6 +101,44 @@ resource "aws_api_gateway_resource" "latest" {
   parent_id   = "${aws_api_gateway_rest_api.latest.root_resource_id}"
   path_part   = "{proxy+}"
 }
+resource "aws_acm_certificate" "cert" {
+  domain_name       = "aluc.io"
+  subject_alternative_names = ["*.aluc.io"]
+  validation_method = "DNS"
+}
+resource "aws_route53_record" "cert_validation" {
+  name    = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_name}"
+  type    = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_type}"
+  zone_id = "${data.aws_route53_zone.main.id}"
+  records = ["${aws_acm_certificate.cert.domain_validation_options.0.resource_record_value}"]
+  ttl     = 60
+}
+resource "aws_acm_certificate_validation" "cert" {
+  certificate_arn         = "${aws_acm_certificate.cert.arn}"
+  validation_record_fqdns = ["${aws_route53_record.cert_validation.fqdn}"]
+}
+resource "aws_api_gateway_domain_name" "alucio" {
+  domain_name              = "aluc.io"
+  regional_certificate_arn = "${aws_acm_certificate_validation.cert.certificate_arn}"
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}
+/*
+resource "aws_route53_record" "to_apigateway" {
+  name    = "${aws_api_gateway_domain_name.alucio.domain_name}"
+  type    = "A"
+  zone_id = "${data.aws_route53_zone.main.id}"
+
+  alias {
+    evaluate_target_health = true
+    name                   = "${aws_api_gateway_domain_name.alucio.regional_domain_name}"
+    zone_id                = "${aws_api_gateway_domain_name.alucio.regional_zone_id}"
+  }
+}
+*/
+
+
 
 provider "aws" {
   version = "~> 2.0"
@@ -135,6 +173,7 @@ resource "aws_s3_bucket" "main" {
 }
 EOF
 }
+
 
 resource "aws_s3_bucket" "log_bucket" {
   bucket = "aluc.io-log"
