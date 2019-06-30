@@ -14,26 +14,26 @@ export const setLevel = (l) => { level = l }
 // 10.x 에서는 DEBUG, INFO, WARN, ERROR 와 같은 log level 을 자동으로 붙여주는 것 같음.
 export const createLogger = (type='-') => {
   const logger = {
-    debug: (msg: string | Object) => {
+    debug: (msg) => {
       if (level < EnumLogLevel.debug) return
 
       msg = typeof msg === 'object' ? JSON.stringify(msg) : msg
       // console.debug 는 time, request-id 를 남기지 않아서 `log()` 사용
       console.log(`DEBUG [${type}] ${msg}`)
     },
-    info: (msg: string | Object) => {
+    info: (msg) => {
       if (level < EnumLogLevel.info) return
 
       msg = typeof msg === 'object' ? JSON.stringify(msg) : msg
       console.info(`INFO [${type}] ${msg}`)
     },
-    warn: (msg: string | Object) => {
+    warn: (msg) => {
       if (level < EnumLogLevel.warn) return
 
       msg = typeof msg === 'object' ? JSON.stringify(msg) : msg
       console.warn(`WARN [${type}] ${msg}`)
     },
-    error: (msg: string | Object) => {
+    error: (msg) => {
       if (level < EnumLogLevel.error) return
 
       msg = typeof msg === 'object' ? JSON.stringify(msg) : msg

@@ -82,6 +82,10 @@ jobs:
           export SLS_APIGW_ROOT_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_rest_api." + env.SLS_STAGE].primary.attributes.root_resource_id')
           export SLS_APIGW_PROXY_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_resource." + env.SLS_STAGE].primary.id')
 
+          wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz
+          export ALUCIO_MMDB_PATH=$(tar -tf GeoLite2-City.tar.gz | rg mmdb$)
+          tar xvf GeoLite2-City.tar.gz
+
           echo $GIT_REVISION
           echo $S3PREFIX
           echo $SLS_STAGE
@@ -91,6 +95,8 @@ jobs:
 
           npx sls package --package build --verbose
           npx sls deploy --package build --verbose
+
+
       - save_cache:
           paths:
             - .terraform
