@@ -20,6 +20,7 @@ provider:
   timeout: 2
   environment:
     ALUCIO_S3BUCKET_NAME: ${env:ALUCIO_S3BUCKET_NAME}
+    ALUCIO_MMDB_PATH: ${env:ALUCIO_ALUCIO_MMDB_PATH}
     GIT_REVISION: ${env:GIT_REVISION}
     S3PREFIX: ${env:S3PREFIX}
   iamRoleStatements:
