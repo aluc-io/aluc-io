@@ -9,6 +9,7 @@ import { eventContext } from  'aws-serverless-express/middleware'
 import accessMiddleware from './middleware-access'
 import { createLogger } from './logger'
 
+console.log('app.js start')
 const logger = createLogger('app')
 
 const { ALUCIO_S3BUCKET_NAME, S3PREFIX, GIT_REVISION } = process.env
