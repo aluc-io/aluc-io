@@ -7,6 +7,8 @@ public
 
 .envrc
 
+/build
+
 /.serverless/
 /.webpack/
 /.terraform
