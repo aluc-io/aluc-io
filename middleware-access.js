@@ -21,7 +21,9 @@ const getSourceIp = (event) => {
   return "127.0.0.1"
 }
 
+console.log('openSync: ' + MMDB_PATH)
 const lookup = maxmind.openSync(MMDB_PATH)
+console.log('good')
 
 const accessMiddleware = (req, _, next) => {
   const sourceIp = getSourceIp(req.apiGateway.event)
