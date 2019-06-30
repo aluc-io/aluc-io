@@ -5,7 +5,7 @@ import * as AWS from 'aws-sdk'
 import morgan from 'morgan'
 import mime from 'mime-types'
 import slash from 'slash'
-import * as awsServerlessExpressMiddleware from 'aws-serverless-express/middleware'
+import { eventContext } from  'aws-serverless-express/middleware'
 import accessMiddleware from './middleware-access'
 import { createLogger } from './logger'
 
@@ -16,7 +16,7 @@ const { ALUCIO_S3BUCKET_NAME, S3PREFIX, GIT_REVISION } = process.env
 const s3 = new AWS.S3()
 export const app = express()
 
-app.use(awsServerlessExpressMiddleware.eventContext())
+app.use(eventContext())
 app.use(accessMiddleware)
 
 // ALB backend 로 lambda 가 사용될 땐 req.apiGateway.event.requestContext 에서
@@ -70,4 +70,5 @@ app.use('/', (req, res) => {
   })
 })
 
+console.log('app.js was loaded')
 logger.info('app.js was loaded')
