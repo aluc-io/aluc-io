@@ -1,4 +1,7 @@
 import * as maxmind from 'maxmind'
+import { createLogger } from './logger'
+
+const logger = createLogger('access middleware')
 
 const MMDB_PATH = process.env.ALUCIO_MMDB_PATH
 
@@ -17,13 +20,12 @@ const getSourceIp = (event) => {
   sourceIP = event.requestContext.identity.sourceIp
   if (sourceIP) return sourceIP
 
-  console.error('not found ip')
+  logger.warn('not found ip')
   return "127.0.0.1"
 }
 
-console.log('openSync: ' + MMDB_PATH)
+logger.info('openSync: ' + MMDB_PATH)
 const lookup = maxmind.openSync(MMDB_PATH)
-console.log('good')
 
 const accessMiddleware = (req, _, next) => {
   const sourceIp = getSourceIp(req.apiGateway.event)
