@@ -28,18 +28,22 @@ logger.info('openSync: ' + MMDB_PATH)
 const lookup = maxmind.openSync(MMDB_PATH)
 
 const accessMiddleware = (req, _, next) => {
-  const sourceIp = getSourceIp(req.apiGateway.event)
+  const { headers } = req.apiGateway.event
+  const headers['x-forwarded-for']
+  const strIPs = getSourceIp(req.apiGateway.event)
+  const sourceIP = (strIPs.split(',')[0] || '').trim()
+  const tracerouteIPs = strIPs.split(',').slice(1).join(',').trim()
   const { requestId } = req.apiGateway.event.requestContext
 
-  const info = lookup.get(sourceIp)
+  const info = lookup.get(sourceIP)
   const locationArray = (info && info.location)
     ? `${info.location.longitude},${info.location.latitude}`
     : ''
-  const cityName = info ? info.city.names.en : ''
-  const continent = info ? info.continent.code : ''
-
-  const cca2 = info ? info.country.iso_code : ''
-  req.accessInfo = { ...req.accessInfo, sourceIp, continent, cca2, cityName, requestId, locationArray }
+  const cityName = (info && info.city) ? info.city.names.en : ''
+  const continent = (info && info.continent) ? info.continent.code : ''
+  const cca2 = (info && info.country) ? info.country.iso_code : ''
+  const protocol = req.protocol
+  req.accessInfo = { ...req.accessInfo, sourceIP, tracerouteIPs, continent, cca2, cityName, requestId, locationArray, protocol }
   next()
 }
 

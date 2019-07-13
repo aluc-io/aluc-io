@@ -22,14 +22,16 @@ app.use(accessMiddleware)
 // ALB backend 로 lambda 가 사용될 땐 req.apiGateway.event.requestContext 에서
 // request-id 를 가져오지 못하므로 handler 에서 Context 에 접근하여 request-id 를 셋팅해줌.
 // morgan.token('request-id', (req: IRequest) => req.accessInfo.requestId)
-morgan.token('source-ip',      (req) => req.accessInfo.sourceIp)
+morgan.token('source-ip',      (req) => req.accessInfo.sourceIP || '-')
+morgan.token('traceroute-ips', (req) => req.accessInfo.tracerouteIPs || '-')
 morgan.token('host',           (req) => req.hostname)
 morgan.token('location-array', (req) => req.accessInfo.locationArray)
-morgan.token('continent',      (req) => req.accessInfo.continent)
-morgan.token('cca2',           (req) => req.accessInfo.cca2)
-morgan.token('city-name',      (req) => req.accessInfo.cityName)
+morgan.token('continent',      (req) => req.accessInfo.continent || '-')
+morgan.token('cca2',           (req) => req.accessInfo.cca2 || '-')
+morgan.token('city-name',      (req) => req.accessInfo.cityName || '-')
+morgan.token('protocol',       (req) => req.accessInfo.protocol || '-')
 morgan.token('revision',          () => GIT_REVISION)
-app.use(morgan(':date[iso] :request-id INFO [ACCESS] ":revision" :source-ip :continent :cca2 ":city-name" [:location-array] :host ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms ":referrer" ":user-agent"'))
+app.use(morgan(':date[iso] :request-id INFO [ACCESS] ":revision" - :protocol :source-ip ":traceroute-ips" :continent :cca2 ":city-name" [:location-array] :host ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms ":referrer" ":user-agent"'))
 
 app.use('/version.json', (req, res) => {
   res.json({ GIT_REVISION, S3PREFIX })
