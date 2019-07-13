@@ -14,7 +14,7 @@ const getSourceIp = (event) => {
   let sourceIP = queryStringParameters.IP
   if (sourceIP) return sourceIP
 
-  sourceIP = event.headers["x-forwarded-for"]
+  sourceIP = event.headers['X-Forwarded-For'] || event.headers["x-forwarded-for"]
   if (sourceIP) return sourceIP
 
   sourceIP = event.requestContext.identity.sourceIp
@@ -28,9 +28,8 @@ logger.info('openSync: ' + MMDB_PATH)
 const lookup = maxmind.openSync(MMDB_PATH)
 
 const accessMiddleware = (req, _, next) => {
-  const strIPs = getSourceIp(req.apiGateway.event)
-  const sourceIP = (strIPs.split(',')[0] || '').trim()
-  const tracerouteIPs = strIPs.split(',').slice(1).join(',').trim()
+  const tracerouteIPs = getSourceIp(req.apiGateway.event)
+  const sourceIP = (tracerouteIPs.split(',')[0] || '').trim()
   const { requestId } = req.apiGateway.event.requestContext
 
   const info = lookup.get(sourceIP)
