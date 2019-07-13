@@ -28,6 +28,7 @@ logger.info('openSync: ' + MMDB_PATH)
 const lookup = maxmind.openSync(MMDB_PATH)
 
 const accessMiddleware = (req, _, next) => {
+  logger.info(req.apiGateway.event.headers)
   const strIPs = getSourceIp(req.apiGateway.event)
   const sourceIP = (strIPs.split(',')[0] || '').trim()
   const tracerouteIPs = strIPs.split(',').slice(1).join(',').trim()
