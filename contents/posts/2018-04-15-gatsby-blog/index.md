@@ -11,43 +11,42 @@ published: true
 [Gatsby][gatsby] is **Blazing-fast static site generator for React**
 
 라고 공식 사이트에서 설명하고 있다. 정말 빠른지는 다른 static site generator 와
-비교를 해봐야겠고, 먼저 gatsby 를 선택한 이유는,
+비교를 해봐야겠고, 내가 gatsby 를 선택한 이유는,
 
 - [StaticGen][static_gen] 에서 top 5 안에 드는 높은 github star 를 가졌고,
 - 템플릿 엔진으로 [React][react] 를 사용한다.
 
 [React][react] 를 정적 템플릿 엔진으로만 사용 할 수도 있지만 프론트엔드 View
-Layer 구현 라이브러리로서 굉장히 강력하고 기능도 많다. 따라서 이후에 신규
-기능이나 디자인을 퍼포먼스 최적화 하면서 추가하기 용이하고 EJS 와 같은 템플릿
-엔진뿐만 아니라 [Angular][angular], [Vuejs][vuejs] 조차도 따라올 수 없는 가장 큰
-에코시스템을 확보하고 있다. 내가 원하는 컴포넌트를 누군가가 잘 만들어 [npm][npm]
-에 올려놓았을 기대를 할 수 있으며 문제가 생겼을때 Stackover flow 에서 모범 답을
-찾을 수 있는 확률이 크며 다룰수 있는 개발자를 구하기가 쉽다는 의미이기도 하다.
+Layer 구현 라이브러리로서 굉장히 강력하고 기능도 많다. Client side 의 동적인
+기능이나 디자인을 추가하기 용이하고 Facebook 의 주도로 개발되는 Opensource
+Frontend view library 로써 거대한 커뮤니티, 에코시스템을 가지고 있다. 내가
+필요한 컴포넌트가 누군가가 잘 만들어 [npm][npm] 에 올려 두었을 확률이나 문제가
+생겼을때 Stackoverflow 에서 모범 답을 찾을 수 있는 확률이 크며 개발자를
+구하기 쉽다는 의미이기도 하다.
 
 # 1. Gatsby 프로젝트 개발환경 준비
 
 ## 1.1. Gatsby 설치
+
 ```sh
 $ yarn global add gatsby-cli
 ```
 
 ## 1.2. Gatsby 프로젝트 생성
 Gatsby 프로젝트를 생성하려면 gatsby starter 를 선택해야한다. starter 는 gatsby
-로 만들 static site 의 기초 틀이다.  상품 소개 웹 사이트를 만들것 인지, 블로그를
-만들것 인지, 용도에 맞는 starter 를 선택해서 사용하면 되는데 공식 가이드의
+로 만들 static site 의 기초 틀이다. 상품 소개 웹 사이트를 만들건지, 블로그를
+만들건지, 용도에 맞는 starter 를 선택해서 사용하면 되는데 공식 가이드의
 [starters][starters] 에서 demo 를 보면서 선택할 수 있다.
 
-`gatsby new` 명령어를 통해 프로젝틀르 생성하는데 여기에 starter 의 github 저장소
+`gatsby new` 명령어를 통해 프로젝트를 생성하는데 여기에 starter 의 github 저장소
 주소를 입력해야한다.  나는 [gatsby-starter-personal-blog][personal_blog_starter]
 starter 를 선택했다.  생략하면 [default starter][default_starter] 가 선택된다.
 `my-blog` 라는 디렉토리가 생성되고 npm 모듈들이 설치된다.  `gatsby new` 명령어를
 통해서 프로젝트를 생성하자.
 
-```sh
+```bash
 $ gatsby new my-blog https://github.com/greglobinski/gatsby-starter-personal-blog
-```
 
-```sh
 info Creating new site from git: https://github.com/greglobinski/gatsby-starter-personal-blog.git
 Cloning into 'my-blog'...
 remote: Counting objects: 1704, done.
