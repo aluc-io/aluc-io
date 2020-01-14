@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>slide-serverless</title>
+    <meta charset="utf-8">
+    <meta property="og:url" content="https://b6pzeusbc54tvhw5jgpyw8pwz2x6gs.github.io/slide-serverless"/>
+    <meta property="og:title" content="slide-serverless" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="slide about serverless" />
+    <link href="./css/Lato-Nanum-Gothic.css" rel="stylesheet">
+    <link href="./css/Yanone-Kaffeesatz.css" rel="stylesheet">
+    <link href="./css/Droid-Serif-400-700-400italic.css" rel="stylesheet">
+    <link href="./css/Ubuntu-Mono-400-700-400italic.css" rel="stylesheet">
+    <link href="./css/notosanskr.css" rel="stylesheet">
+    <link href="./css/user.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <textarea id="source">
+
+layout: false
+
+class: page-10
+
+### GitLab CI vs CircleCI
+
+.logo-wrapper.right.right-bottom.list-unstyled[
+- [https://aluc.io](https://aluc.io)
+- [me@aluc.io](mailto:me@aluc.io)
+]
+
+---
+
+# TOC
+
+---
+
+# 사용 타입
+
+## GitLabCI with GitLab
+- SaaS offering hosted by GitLab
+- Self-Managed
+
+## CircleCI with Github
+- Saas and Enterprise
+- 
+
+---
+
+# 가정
+
+## GitlabCI
+- https://gitlab.com/gitlab-org/gitlab-runner
+
+## CircleCI
+- Managed by system admin ()
+
+모든 서비스를 On-prem에 설치해서 사용하는 Enterprise 버전이라 가정하고
+
+진행합니다. gitlab의 경우 Enterprise버전에서도 운영팀이 Shared-runners를 제공해 줄 수 있지만,
+docker in docker 사용등 Shared-runners에서 지원하지 않는 기능을 사용하려면 어쩔 수 없이
+Self-hosted runners를 사용해야 하는데, 그래서 저는 Self-hosted runners를 사용하는 것을 가정으로 비교를 하겠습니다.
+
+---
+
+# 가정
+
+## GitlabCI
+- Shared Runners: Managed by system admin
+- Group Runners, Specific Runners: Self-hosted
+- Shared Runners가 없거나 DinD, private registry 사용 기능 등을 지원해주지 않는다면,
+  할 수 없이 Self-hosted를 사용해야함.
+- 이 슬라이드에선 Self-hosted runners를 기준으로 비교.
+
+## CircleCI
+- GitHub, CircleCI 모두 system admin 이 담당. Self-hosted 할 수 있는 포인트가 없음.
+
+---
+
+# GitLabCI 아키텍쳐
+![](./img/ci-cd-architecture_2x.png)
+
+---
+
+# CircleCI 아키텍쳐
+![](./img/ccie_arch.png)
+
+---
+
+# Machine 관리
+
+## GitlabCI
+- (Self-hosted)gitlab-runner가 구동되는 VM이나 물리머신을 관리해야함
+- gitlab-runner를 관리해야함
+    - DinD, DooD, private registry사용
+- `tags` 프로퍼티를 통해 러너를 선택. 스크립트 작성자가 러너 구성을 알아야함.
+- Self-hosted 머신들을 체계적으로 잘 관리해보고 싶은 유혹에 빠짐.
+
+## CircleCI
+- 관리할 수 있는 VM이나 물리머신이 없음
+
+---
+
+# Machine 관리
+// TODO: DinD, DooD, private registry 사용 코드
+
+---
+
+Workflow - stage
+
+---
+
+# unit test result
+
+---
+
+# artifacts, persist
+
+---
+
+.left-half[
+  ![pet](./img/ramiz-dedakovic-9SWHIgu8A8k-unsplash.jpg)
+  .center[**Stateful**]
+]
+
+.right-half[
+  ![cattle](./img/james-wainscoat-DhU7XRg-Ygc-unsplash.jpg)
+  .center[**Stateless**]
+]
+
+.top-right-copyright[
+- Photo by Ramiz Dedaković on Unsplash
+- Photo by James Wainscoat on Unsplash
+]
+
+.footnote[.text[Stateful, Stateless 자원을 설명하기 위해 Pet, Cattle 비유는 자주 등장합니다]]
+
+---
+
+# Cold start problem
+
+.margin-top-1em.center[![serverless-price](./img/1_sUi1ffuIDGsqVU5pcyGMEw.png)]
+
+.footnote[.text[새로운 함수 실행 환경 초기화로 인한 릴레이를 Cold start 라고 합니다]]
+
+---
+
+class: page-group-reference
+
+### References
+- https://circleci.com/docs/2.0/migrating-from-gitlab/
+- https://www.youtube.com/watch?v=s8DCpG1PeaU
+
+### This slide
+- https://github.com/b6pzeusbc54tvhw5jgpyw8pwz2x6gs/slide-serverless
+
+---
+
+class: middle, center
+
+# 🙏 Thank you 🙇
+
+    </textarea>
+    <div id="timerBox">
+      <div id="timer"></div>
+      <div id="start">start</div>
+    </div>
+    <script src="./js/remark-latest.min.js"></script>
+    <script src="./js/user.js"></script>
+  </body>
+</html>
