@@ -21,7 +21,7 @@ layout: false
 
 class: page-10
 
-## 결정하기 전 알아두면 좋은
+## 결정하기 전 알아야 할 디테일,
 ### GitLabCI vs CircleCI
 
 .logo-wrapper.right.right-bottom.list-unstyled[
@@ -61,23 +61,30 @@ class: page-10
 
 # TOC
 
-- GitLabCI, CircleCI 소개
+- Public information on the internet
+- GitLabCI and CircleCI
 - Architecture
 - VM or Physical Server Management
 - Available Executor
-- Public information on the internet
-
-- Configuring file
+- Config file
 - Auto completion & validation check
-- Lint
-- GitLabCI to CircleCI Migration docs
+- lint
 
-## 스크립트 작성
 - Hello world
+- Docker image
+- Multiple jobs
+- Cache
+- Artifacts
+- Share Data Among Jobs
+- Unit test result
+- Linked project
+- Protected variables, security
+- Debugging
+- Web UI
+- Wrting scripts - yaml anchors
+- Wrting scripts - environments
 
-- Scripts 작성
-    - 환경변수 관리
-    - 
+- References
 
 ---
 
@@ -99,7 +106,7 @@ class: scroll
 
 ---
 
-# 소개
+# GitLabCI and CircleCI
 
 ## GitlabCI
 - With GitLab - https://gitlab.com/gitlab-org/gitlab-runner
@@ -120,6 +127,8 @@ class: scroll
 
 class: scroll
 
+# Architecture
+
 # GitLabCI 아키텍쳐
 ![](./img/ci-cd-architecture_2x.png)
 
@@ -129,7 +138,6 @@ class: scroll
 .footnote[.text[GitLabCI는 polling 방식, CircleCI는 github application 형태의 webhook 방식으로 동작합니다]]
 
 ---
-
 
 class: scroll
 
@@ -311,7 +319,7 @@ jobs:
 
 ---
 
-# Multi job
+# Multiple jobs
 
 ## GitLabCI
 
