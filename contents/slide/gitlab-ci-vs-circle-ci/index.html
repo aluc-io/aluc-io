@@ -21,7 +21,8 @@ layout: false
 
 class: page-10
 
-### GitLab CI vs CircleCI
+## 결정하기 전 알아두면 좋은
+### GitLabCI vs CircleCI
 
 .logo-wrapper.right.right-bottom.list-unstyled[
 - [https://aluc.io](https://aluc.io)
@@ -30,82 +31,327 @@ class: page-10
 
 ---
 
+# Who am I
+
+```
+- nickname: aluc
+- name:
+    ko: 유 병화
+    en: Alfreduc You
+- job:
+    - 서버 개발
+    - Web Frontend 개발
+    - Cloud Native Application 개발
+- blog: https://aluc.io/
+- I like ${ }
+    - MacOS > Ubuntu >>> Windows
+    - Stateless > Stateful
+    - Serverless > Container >>> other
+    - IaS >>> Web Console
+    - React > Vue > Angular
+    - typescript >> javascript
+    - Slack > Mattermost
+    - Automatic Car > Manual Car
+    - VS Code > Vim >>> Eclipse
+    - gitlab > github
+    - CircleCI > GitlabCI > Jenkins
+```
+
+---
+
 # TOC
 
+- GitLabCI, CircleCI 소개
+- Architecture
+- VM or Physical Server Management
+- Available Executor
+- Configuring file
+- Auto completion & validation check
+- Lint
+- GitLabCI to CircleCI Migration docs
+
+## 스크립트 작성
+- Hello world
+
+- Scripts 작성
+    - 환경변수 관리
+    - 
+
 ---
 
-# 사용 타입
+# 소개
 
-## GitLabCI with GitLab
-- SaaS offering hosted by GitLab
-- Self-Managed
+## GitlabCI
+- With GitLab - https://gitlab.com/gitlab-org/gitlab-runner
+- SaaS and Enterprise, Self-Managed
+- 2011: Start of GitLab
+- 2012년 11월 November first version of GitLab CI
+- Big Breaking Change: 2015년 9월 22일 GitLab 8.0 부터 GitLab 프로젝트와 통합
 
-## CircleCI with Github
+## CircleCI
+- Support github, github enterprise, bitbucket
 - Saas and Enterprise
-- 
+- 2016년 5월 12일 0.2.36 release
+- Big Breaking Change: 2017년 9월 6일 2.0 버전 release
+
+.footnote[.text[GitLbCI와 CircleCI를 소개합니다]]
 
 ---
 
-# 가정
-
-## GitlabCI
-- https://gitlab.com/gitlab-org/gitlab-runner
-
-## CircleCI
-- Managed by system admin ()
-
-모든 서비스를 On-prem에 설치해서 사용하는 Enterprise 버전이라 가정하고
-
-진행합니다. gitlab의 경우 Enterprise버전에서도 운영팀이 Shared-runners를 제공해 줄 수 있지만,
-docker in docker 사용등 Shared-runners에서 지원하지 않는 기능을 사용하려면 어쩔 수 없이
-Self-hosted runners를 사용해야 하는데, 그래서 저는 Self-hosted runners를 사용하는 것을 가정으로 비교를 하겠습니다.
-
----
-
-# 가정
-
-## GitlabCI
-- Shared Runners: Managed by system admin
-- Group Runners, Specific Runners: Self-hosted
-- Shared Runners가 없거나 DinD, private registry 사용 기능 등을 지원해주지 않는다면,
-  할 수 없이 Self-hosted를 사용해야함.
-- 이 슬라이드에선 Self-hosted runners를 기준으로 비교.
-
-## CircleCI
-- GitHub, CircleCI 모두 system admin 이 담당. Self-hosted 할 수 있는 포인트가 없음.
-
----
+class: scroll
 
 # GitLabCI 아키텍쳐
 ![](./img/ci-cd-architecture_2x.png)
 
----
-
 # CircleCI 아키텍쳐
 ![](./img/ccie_arch.png)
 
+.footnote[.text[가장 큰 차이는 GitLabCI는 polling 방식, CircleCI는 github application 형태의 webhook 방식입니다]]
+
 ---
 
-# Machine 관리
+class: scroll
 
-## GitlabCI
-- (Self-hosted)gitlab-runner가 구동되는 VM이나 물리머신을 관리해야함
-- gitlab-runner를 관리해야함
-    - DinD, DooD, private registry사용
+# VM or Physical Server Management
+
+## GitLabCI
+- Shared Runners: Managed by system admin
+- Group Runners, Specific Runners: Self-hosted
+- Shared Runners가 없거나 DinD, DooD, private registry 사용 기능 등을 지원해주지 않는다면,
+  할 수 없이 Self-hosted 방식을 사용해야함.
+    - (Self-hosted) gitlab-runner가 구동되는 VM이나 물리머신을 관리해야함.
+    - gitlab-runner를 관리해야함.
 - `tags` 프로퍼티를 통해 러너를 선택. 스크립트 작성자가 러너 구성을 알아야함.
-- Self-hosted 머신들을 체계적으로 잘 관리해보고 싶은 유혹에 빠짐.
 
 ## CircleCI
-- 관리할 수 있는 VM이나 물리머신이 없음
+- GitHub, CircleCI 모두 system admin 이 담당.
+- 개발자가 Self-hosted로 관리할 수 있는 VM이나 물리머신이 없음.
+
+## Thinking
+- 슬라이드에서는 서버 개발자로서 gitlab-ci Self-hosted runners 사용 경험을 기준으로 비교.
+- Self-hosted 머신 사용은 커스터마이징이 가능하여 가능성이 무궁 무진하다는 장점이 있지만,
+- 운영팀이 아닌 일반 개발자가 gitlab-runner를 체계적으로 잘 관리해보고 싶은 유혹에 빠질 수 있음.
+
+.footnote[.text[두번째 큰 차이점은 GitLabCI는 Self-hosted gitlab-runner 사용이 가능하지만 CircleCI는 SaaS형태로만 제공되어 유저가 자원을 관리하지 않습니다]]
 
 ---
 
-# Machine 관리
-// TODO: DinD, DooD, private registry 사용 코드
+# Available Executor
+
+## GitLabCI
+- Shell (Bash / Windows Batch / PowerShell)
+- Parallels / VirtualBox (Windows, Linux, macOS or FreeBSD)
+- Docker
+- Docker Machine (auto-scaling)
+- Kubernetes
+- SSH
+- Custom
+
+## CircleCI
+- Within Docker images (docker)
+- Within a Linux virtual machine (VM) image (machine)
+- Within a macOS VM image (macos)
+- Within a windows VM image (windows)
+
+.footnote[.text[공통적으로 docker, shell(machine) executor를 지원하며, GitLabCI가 Custom executor 등 더 많은 환경을 지원합니다]]
 
 ---
 
-Workflow - stage
+# Config file
+
+## GitlabCI
+- Default, `<projectRoot>/.gitlab-ci.yml`
+- https://docs.gitlab.com/ee/ci/yaml/
+- https://gitlab.com/help/ci/yaml/README.md
+- Custom CI configuration path
+    - `my/path/.gitlab-ci.yml`
+    - `http://example.com/generate/ci/config.yml`
+    - `my/path/.my-custom-file.yml@mygroup/another-project`
+    - https://docs.gitlab.com/ee/user/project/pipelines/settings.html#custom-ci-configuration-path
+
+## CircleCI
+- `<projectRoot>/.circleci/config.yml`
+- https://circleci.com/docs/2.0/configuration-reference/
+
+.footnote[.text[모두 yml 컨피그 파일을 사용하며, GitLabCI는 Custom path 설정을 통해 외부의 yml파일을 사용 할 수도 있습니다]]
+
+---
+
+# Auto completion & validation check
+
+![](./img/auto-complete.png)
+
+http://schemastore.org/json/
+
+.footnote[.text[두 솔루션 모두 VS Code등의 에디터를 통해 컨피그 파일 작성시 자동완성, 밸리데이션 체크를 할 수 있습니다]]
+
+---
+
+class: scroll
+
+# lint
+
+## GitLabCI
+
+```
+https://gitlab.com/<namespace>/<projectName>/-/ci/lint
+```
+
+```
+https://gitlab.com/help/api/lint.md
+```
+
+![](./img/ci-lint-button.png)
+![](./img/ci-lint-result.png)
+
+## CircleCI
+
+```
+$ brew install circleci
+$ circleci config validate
+Config file at .circleci/config.yml is valid.
+```
+
+```
+$ circleci config validate
+Error: ERROR IN CONFIG FILE:
+[#] required key [jobs] not found
+```
+
+.footnote[.text[GitLabCI는 WebUI와 API를 통해 lint를 제공하고 CircleCI는 CLI 명령어를 통해 할 수 있습니다]]
+
+---
+
+# GitLabCI to CircleCI Migration docs
+
+https://circleci.com/docs/2.0/migrating-from-gitlab/
+
+![](./img/script-basic.png)
+
+.footnote[.text[기본적인 스크립트 구조의 차이는 CircleCI 공식 문서에서 설명하고 있습니다]]
+
+---
+
+# Hello world
+
+## GitLabCI
+
+```
+some-job-name:
+  script: echo "Hello world"
+```
+
+## CircleCI
+
+```
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.7.0
+    steps:
+      - checkout
+      - run: echo "Hello world"
+```
+
+.footnote[.text[빌드의 실행 단위는 모두 job 이라고 합니다. GitLabCI에서는 서버의 버전도 명시합니다]]
+
+---
+
+# Docker image
+
+## GitLabCI
+
+```
+some-job-name:
+  image: ruby:2.7.0
+  script: echo "Hello world"
+```
+
+또는
+
+```
+image: ruby:2.7.0
+some-job-name:
+  script: echo "Hello world"
+```
+
+## CircleCI
+
+```
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.7.0
+    steps:
+      - checkout
+      - run: echo "Hello world"
+```
+
+.footnote[.text[CircleCI에서는 job마다 docker 속성을 명시해야하지만 GitLabCI에서는 모든 job에 적용되는 하나의 설정을 할 수도 있습니다]]
+
+---
+
+# Multi job
+
+## GitLabCI
+
+```
+job1:
+  stage: build
+  script: make build dependencies
+
+job2:
+  stage: build
+  script: make build artifacts
+
+job3:
+  stage: test
+  script: make test
+
+job4:
+  stage: deploy
+  script: make deploy
+
+stages:
+  - build
+  - test
+  - deploy
+```
+
+## CircleCI
+
+```
+version: 2
+jobs:
+  job1:
+    steps:
+      - checkout
+      - run: make build dependencies
+  job2:
+    steps:
+      - run: make build artifacts
+  job3:
+    steps:
+      - run: make test
+  job4:
+    steps:
+      - run: make deploy
+
+workflows:
+  version: 2
+  jobs:
+    - job1
+    - job2
+    - job3:
+        requires:
+          - job1
+          - job2
+    - job4:
+        requires:
+          - job3
+
+```
 
 ---
 
@@ -147,11 +393,19 @@ Workflow - stage
 class: page-group-reference
 
 ### References
-- https://circleci.com/docs/2.0/migrating-from-gitlab/
 - https://www.youtube.com/watch?v=s8DCpG1PeaU
+- https://about.gitlab.com/company/history/
+- https://about.gitlab.com/releases/
+- https://gitlab.com/gitlab-org/gitlab-foss/blob/master/changelogs/archive.md
+- https://about.gitlab.com/releases/2015/09/22/gitlab-8-0-released/
+- https://ilya.puchka.me/parametrised-jobs-in-circleci/
+- https://about.gitlab.com/devops-tools/circle-ci-vs-gitlab.html
 
-### This slide
-- https://github.com/b6pzeusbc54tvhw5jgpyw8pwz2x6gs/slide-serverless
+- https://circleci.com/server/changelog/
+- https://circleci.com/docs/2.0/migrating-from-gitlab/
+- https://circleci.com/docs/2.0/circleci-images/
+- https://circleci.com/docs/2.0/configuration-reference/
+
 
 ---
 

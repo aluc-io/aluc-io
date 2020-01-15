@@ -91,7 +91,7 @@ const getMS = (ms) => {
 }
 
 const slideshow = remark.create({
-  ratio: '4:3',
+  ratio: '16:9',
   navigation: {
     scroll: false,
   },
@@ -111,9 +111,10 @@ const handleScroll = (e) => {
 }
 
 slideshow.on('showSlide', function (slide) {
+  const classArr = (slide.properties.class || '').split(',').map( str => str.trim() )
   console.log(slide)
   console.log(slide.getSlideIndex())
-  const classArr = (slide.properties.class || '').split(',').map( str => str.trim() )
+  console.log(classArr)
   if (classArr.includes('scroll')) {
     setTimeout( () => {
       const elPageNumber = document.querySelector('body > div.remark-slides-area > div.remark-slide-container.remark-visible > div.remark-slide-scaler .remark-slide-number')
