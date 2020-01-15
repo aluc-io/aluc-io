@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>slide-serverless</title>
+    <title>gitlabci-vs-circleci</title>
     <meta charset="utf-8">
     <meta property="og:url" content="https://b6pzeusbc54tvhw5jgpyw8pwz2x6gs.github.io/slide-serverless"/>
-    <meta property="og:title" content="slide-serverless" />
+    <meta property="og:title" content="gitlabci-vs-circleci" />
     <meta property="og:type" content="website" />
-    <meta property="og:description" content="slide about serverless" />
+    <meta property="og:description" content="gitlabci vs circleci" />
     <link href="./css/Lato-Nanum-Gothic.css" rel="stylesheet">
     <link href="./css/Yanone-Kaffeesatz.css" rel="stylesheet">
     <link href="./css/Droid-Serif-400-700-400italic.css" rel="stylesheet">
@@ -65,6 +65,8 @@ class: page-10
 - Architecture
 - VM or Physical Server Management
 - Available Executor
+- Public information on the internet
+
 - Configuring file
 - Auto completion & validation check
 - Lint
@@ -76,6 +78,24 @@ class: page-10
 - Scripts 작성
     - 환경변수 관리
     - 
+
+---
+
+class: scroll
+
+# Public information on the internet
+
+- Google trend: https://trends.google.com/trends/explore?q=gitlab%20ci,circleci
+
+- stackshare: https://stackshare.io/stackups/circleci-vs-gitlab
+
+- CircleCI's GitLabCI to CircleCI Migration:
+    - https://circleci.com/docs/2.0/migrating-from-gitlab/
+
+- GitLab's CircleCI vs. GitLab
+    - https://about.gitlab.com/devops-tools/circle-ci-vs-gitlab.html
+
+.footnote[.text[인터넷에서 확인할 수 있는 두 솔루션의 비교 정보 입니다]]
 
 ---
 
@@ -106,9 +126,10 @@ class: scroll
 # CircleCI 아키텍쳐
 ![](./img/ccie_arch.png)
 
-.footnote[.text[가장 큰 차이는 GitLabCI는 polling 방식, CircleCI는 github application 형태의 webhook 방식입니다]]
+.footnote[.text[GitLabCI는 polling 방식, CircleCI는 github application 형태의 webhook 방식으로 동작합니다]]
 
 ---
+
 
 class: scroll
 
@@ -117,10 +138,9 @@ class: scroll
 ## GitLabCI
 - Shared Runners: Managed by system admin
 - Group Runners, Specific Runners: Self-hosted
-- Shared Runners가 없거나 DinD, DooD, private registry 사용 기능 등을 지원해주지 않는다면,
-  할 수 없이 Self-hosted 방식을 사용해야함.
-    - (Self-hosted) gitlab-runner가 구동되는 VM이나 물리머신을 관리해야함.
-    - gitlab-runner를 관리해야함.
+- Self-hosted 방식을 사용하면,
+    - gitlab-runner가 구동되는 VM이나 물리머신을 관리해야함.
+    - gitlab-runner를 관리해야함: DinD, DooD, private registry 등
 - `tags` 프로퍼티를 통해 러너를 선택. 스크립트 작성자가 러너 구성을 알아야함.
 
 ## CircleCI
@@ -132,7 +152,7 @@ class: scroll
 - Self-hosted 머신 사용은 커스터마이징이 가능하여 가능성이 무궁 무진하다는 장점이 있지만,
 - 운영팀이 아닌 일반 개발자가 gitlab-runner를 체계적으로 잘 관리해보고 싶은 유혹에 빠질 수 있음.
 
-.footnote[.text[두번째 큰 차이점은 GitLabCI는 Self-hosted gitlab-runner 사용이 가능하지만 CircleCI는 SaaS형태로만 제공되어 유저가 자원을 관리하지 않습니다]]
+.footnote[.text[GitLabCI는 Self-hosted gitlab-runner 사용이 가능하지만 CircleCI는 SaaS형태로만 제공되어 유저가 자원을 관리하지 않습니다]]
 
 ---
 
@@ -164,16 +184,23 @@ class: scroll
 - https://docs.gitlab.com/ee/ci/yaml/
 - https://gitlab.com/help/ci/yaml/README.md
 - Custom CI configuration path
-    - `my/path/.gitlab-ci.yml`
-    - `http://example.com/generate/ci/config.yml`
-    - `my/path/.my-custom-file.yml@mygroup/another-project`
     - https://docs.gitlab.com/ee/user/project/pipelines/settings.html#custom-ci-configuration-path
+    - `my/path/.gitlab-ci.yml`
+    - `my/path/.my-custom-file.yml@mygroup/another-project`
+    - `http://example.com/generate/ci/config.yml`
+- include: https://docs.gitlab.com/ee/ci/yaml/#include
 
 ## CircleCI
 - `<projectRoot>/.circleci/config.yml`
 - https://circleci.com/docs/2.0/configuration-reference/
+- orbs, command, parameter, executors 기능이 2.1 버전에 추가되었습니다.
+- But 현재 CircleCI Enterprise 에서는 2.1 기능을 사용 할 수 없습니다.
+    - `circleci config process` 명령어를 통해 2.0 버전으로 변환하여 사용 할 수 있습니다.
+    - https://circleci.com/docs/2.0/local-cli/#processing-a-config
+- [fyaml](https://github.com/CircleCI-Public/fyaml)을 사용하여 별도 파일로 분리하여 config를 작성할 수 있습니다.
 
 .footnote[.text[모두 yml 컨피그 파일을 사용하며, GitLabCI는 Custom path 설정을 통해 외부의 yml파일을 사용 할 수도 있습니다]]
+.footnote2[.text[반면에 CircleCI는 2.1버전에 orbs, commands, parameters, executors 기능이 추가되어 내부, 외부의 코드를 편리하게 재사용 할 수 있습니다]]
 
 ---
 
@@ -222,16 +249,6 @@ Error: ERROR IN CONFIG FILE:
 
 ---
 
-# GitLabCI to CircleCI Migration docs
-
-https://circleci.com/docs/2.0/migrating-from-gitlab/
-
-![](./img/script-basic.png)
-
-.footnote[.text[기본적인 스크립트 구조의 차이는 CircleCI 공식 문서에서 설명하고 있습니다]]
-
----
-
 # Hello world
 
 ## GitLabCI
@@ -254,7 +271,7 @@ jobs:
       - run: echo "Hello world"
 ```
 
-.footnote[.text[빌드의 실행 단위는 모두 job 이라고 합니다. GitLabCI에서는 서버의 버전도 명시합니다]]
+.footnote[.text[빌드의 실행 단위는 모두 job 이라는 용어를 사용합니다. CircleCI에서는 컨피그 버전도 명시해야합니다]]
 
 ---
 
@@ -287,6 +304,8 @@ jobs:
       - checkout
       - run: echo "Hello world"
 ```
+
+- https://circleci.com/docs/2.0/circleci-images/
 
 .footnote[.text[CircleCI에서는 job마다 docker 속성을 명시해야하지만 GitLabCI에서는 모든 job에 적용되는 하나의 설정을 할 수도 있습니다]]
 
@@ -353,13 +372,194 @@ workflows:
 
 ```
 
----
-
-# unit test result
+.footnote[.text[GitLabCI에서는 stage를 사용하고, CircleCI에서는 workflows를 사용해서 순차적 혹은 병렬로 실행되는 빌드 파이프라인을 구성 할 수 있습니다]]
 
 ---
 
-# artifacts, persist
+# Cache
+
+## GitLabCI
+
+```
+image: node:latest
+
+# Cache modules in between jobs
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+before_script:
+  - npm install
+
+test_async:
+  script:
+    - node ./specs/start.js ./specs/async.spec.js
+```
+
+## CircleCI
+
+```
+jobs:
+  job1:
+    steps:
+      - checkout
+      - restore_cache:
+          key: source-v1-< .Revision >
+
+      - run: npm install
+
+      - save_cache:
+          key: source-v1-< .Revision >
+          paths:
+            - "node_modules"
+```
+
+- https://circleci.com/blog/build-cicd-piplines-using-docker/
+
+.footnote[.text[GitLabCI에서는 실행전과 실행후에만 각각 캐시 restore, save 를 할 수 있지만]]
+.footnote2[.text[CircleCI에서는 restore_cache, save_cache step을 빌드 수행중에 언제라도 사용 가능하고 cache key를 정할 때 checksum함수 등을 사용할 수 있도록 template을 지원합니다]]
+
+---
+
+# Artifacts
+
+## GitLabCI
+https://docs.gitlab.com/ee/ci/yaml/#artifacts
+
+## CircleCI
+https://circleci.com/docs/2.0/configuration-reference/#store_artifacts
+
+.footnote[.text[각 job의 산출물을 업로드해서 WebUI나 API를 통해 다운받을 수 있습니다]]
+
+---
+
+# Share Data Among Jobs
+
+## GitLabCI
+https://docs.gitlab.com/ee/ci/yaml/README.html#dependencies
+
+## CircleCI
+https://circleci.com/docs/2.0/configuration-reference/#persist_to_workspace
+
+.footnote[.text[GitLabCI은 기본적으로 바로 이전 stage의 artfacts들을 job실행 전 모두 내려받습니다. dependencies를 명시해서 default 동작을 제어 할 수 있습니다]]
+.footnote2[.text[CircleCI에서는 persist_to_workspace, attach_workspace를 직접 명시해야합니다. 역시 step으로 사용합니다]]
+
+---
+
+# Unit test result
+
+## GitLabCI
+https://docs.gitlab.com/ee/ci/yaml/#coverage
+- coverage % 를 얻을 수 있는 정규식을 제공하고 coverage % 를 표시해주는 badge를 사용할 수 있습니다.
+
+## CircleCI
+https://circleci.com/docs/2.0/configuration-reference/#store_test_results
+- store_test_results 속성을 추가하면 WebUI를 통해 Unit test summary를 확인 할 수 있습니다.
+- coverage % 뱃지를 사용하기 위해서는 https://coveralls.io/ 같은 별도의 SaaS를 사용해야합니다.
+- example: https://github.com/aluc-io/tweening-js
+
+.footnote[.text[GitLabCI에서는 coverage % 뱃지를 제공하고 CircleCI에서는 Unit test summary를 제공합니다]]
+
+---
+
+# Linked project
+
+## GitLabCI
+https://docs.gitlab.com/ee/ci/multi_project_pipelines.html
+
+## CircleCI
+- API를 사용해서 연결된 프로젝트의 Artifacts를 내려 받거나
+- git submodule을 사용해야 합니다.
+
+.footnote[.text[CircleCI에서는 API를 사용하거나 git submodule을 사용해야 하지만 GitLabCI에서는 Configure 레벨에서 지원합니다]]
+
+---
+
+# Protected variables, security
+
+## GitLabCI
+https://docs.gitlab.com/ee/ci/variables/#protected-environment-variables
+- https://docs.gitlab.com/ee/user/permissions.html
+- https://docs.gitlab.com/ee/user/project/new_ci_build_permissions_model.html
+- CircleCI보다 다양한 단계의 permission이 있고 gitlab-ci의 권한은 빌드를 trigger한 유저의
+  권한을 따라가서 연결된 저장소에 접근 할 수도 있습니다.
+- 별도의 protected variables은 protected branch의 빌드시에만 주입됩니다.
+
+## CircleCI
+- Github의 permission인 read, write, admin 레벨을 사용합니다.
+- read 권한으로는 CircleCI의 빌드 로그등을 조회할 수 있지만 retry를 할 수 없고,
+
+.footnote[.text[GitLab과 GitHub이 발전해온 모습에 따라 GitLab은 Enterprise환경에 최적화된 모습이고 GitHub은 오픈소스 프로젝트에 최적화된 모양입니다]]
+
+---
+
+# Debugging
+
+## GitLabCI
+- gitlab-runner의 `exec` 커맨드를 사용해 로컬에서 job을 실행 할 수 있습니다.
+    - https://docs.gitlab.com/runner/commands/#limitations-of-gitlab-runner-exec
+- 11.3 버전에 Interactive Web Terminals 기능이 추가되었습니다.
+    - https://docs.gitlab.com/ee/ci/interactive_web_terminal/
+    - gitlab과 gitlab-runner의 설정이 필요합니다.
+
+## CircleCI
+- CLI의 `local` 커맨드를 사용해 로컬에서 job을 실행 할 수 있습니다.
+- `rerun with ssh` 버튼을 사용해서 빌드가 되고 있는 컨테이너에 접속 할 수 있습니다.
+- Configure tab에서 config.yml 형상을 바로 확인해 
+
+.footnote[.text[디버깅 경험은 CircleCI의 `rerun with ssh`가 압도적으로 좋았습니다]]
+
+---
+
+# Web UI
+
+## GitLabCI
+- 예쁩니다.
+- script 명령어별로 log fold 나 duration time 표시가 되지 않습니다.
+
+## CircleCI
+- 예쁘지만 approve type job이 하나의 job으로 존재하는게 어색하고
+- 병렬 실행 job간의 순서가 매번 변경되는 버그가 있습니다.
+- step단위로 log를 볼 수 있고 duration time 표시도 되어 최적화를 하기 좋습니다.
+
+.footnote[.text[CircleCI의 최신 UI가 테스트 중입니다]]
+
+---
+
+# Wrting scripts - yaml anchors
+
+## GitLabCI
+- `script` 의 타입이 `string` `string[]` 이기 때문에 일부분만 anchors 설정을 할 수 없없습니다.
+- GitLabCI에서도 12.5 버전부터 script작성시 `string[][]` 타입을 허용하면서 yaml anchors를 사용 할 수 있게되었습니다.
+- https://docs.gitlab.com/ee/ci/yaml/#yaml-anchors-for-script
+- [Hidden keys](https://docs.gitlab.com/ee/ci/yaml/#hidden-keys-jobs) 설정을 통해 anchors 정의를 쉽게 할 수 있습니다.
+
+## CircleCI
+- step 단위로 yaml anchors, alias 설정을 할 수 있습니다.
+- workflow에서 사용하지 않는 job을 하나 만들어 두고 anchors 정의에 사용하면 좋습니다.
+
+.footnote[.text[반복을 줄이기 위해 yaml anchors 기능을 사용 할 수 있습니다]]
+
+---
+
+# Wrting scripts - environments
+
+.left-half[
+  ## GitLabCI
+  - 전역, job 범위로 variables 프로퍼티를 통해 환경변수를 주입할 수 있습니다.
+  - 동적으로 만들어지는 환경변수는 script실행 내내 공유됩니다.
+]
+
+.right-half[
+  ## CircleCI
+  - job, step 범위로 environment 프로퍼티를 통해 환경변수를 주입할 수 있습니다.
+  - 동적으로 만들어지는 환경변수는,
+      - 매 step은 새로운 쉘 실행 환경이므로 step간의 파일은 공유되지만 환경변수는 공유되지 않습니다.
+      - step간 환경변수를 공유하기 위해서는, [BASH_ENV](https://circleci.com/docs/2.0/env-vars/#using-bash_env-to-set-environment-variables)를 사용 할 수 있습니다.
+]
+
+.footnote[.text[스크립트가 복잡해지면 환경변수 관리가 중요합니다. 동적으로 환경변수가 생성될 때 차이가 있습니다]]
 
 ---
 
@@ -382,14 +582,6 @@ workflows:
 
 ---
 
-# Cold start problem
-
-.margin-top-1em.center[![serverless-price](./img/1_sUi1ffuIDGsqVU5pcyGMEw.png)]
-
-.footnote[.text[새로운 함수 실행 환경 초기화로 인한 릴레이를 Cold start 라고 합니다]]
-
----
-
 class: page-group-reference
 
 ### References
@@ -400,6 +592,7 @@ class: page-group-reference
 - https://about.gitlab.com/releases/2015/09/22/gitlab-8-0-released/
 - https://ilya.puchka.me/parametrised-jobs-in-circleci/
 - https://about.gitlab.com/devops-tools/circle-ci-vs-gitlab.html
+- https://about.gitlab.com/devops-tools/
 
 - https://circleci.com/server/changelog/
 - https://circleci.com/docs/2.0/migrating-from-gitlab/
