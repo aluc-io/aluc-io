@@ -16,10 +16,11 @@ provider:
   runtime: nodejs8.10
   stage: ${env:SLS_STAGE}
   region: ap-northeast-2
-  memorySize: 128
+  memorySize: 256
   timeout: 2
   environment:
     ALUCIO_S3BUCKET_NAME: ${env:ALUCIO_S3BUCKET_NAME}
+    ALUCIO_MMDB_PATH: ${env:ALUCIO_MMDB_PATH}
     GIT_REVISION: ${env:GIT_REVISION}
     S3PREFIX: ${env:S3PREFIX}
   iamRoleStatements:

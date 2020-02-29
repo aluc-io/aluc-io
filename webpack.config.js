@@ -6,11 +6,17 @@ const packageJson = require('./package.json')
 const _ = require('lodash')
 
 console.log(slsw.lib.entries)
+const MMDB_DIR = path.dirname(process.env.ALUCIO_MMDB_PATH)
+
+const entries = {}
+Object.keys(slsw.lib.entries).forEach(
+  key => (entries[key] = ['source-map-support/register', slsw.lib.entries[key]])
+)
 
 module.exports = {
-  entry: _.isEmpty(slsw.lib.entries) ? { handler: './handler.js'} : slsw.lib.entries,
+  entry: entries,
   mode: slsw.lib.webpack.isLocal ? "development" : "production",
-  //mode: 'development',
+  devtool: 'source-map',
   output: {
     libraryTarget: 'commonjs',
     path: path.resolve(__dirname, '.webpack'),
@@ -39,6 +45,9 @@ module.exports = {
   plugins: [
     new CopyPlugin([
       { from: 'static/favicon', to: 'static/favicon' },
+    ]),
+    new CopyPlugin([
+      { from: MMDB_DIR, to: MMDB_DIR }
     ]),
   ],
   target: 'node',
