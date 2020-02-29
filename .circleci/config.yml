@@ -18,18 +18,18 @@ commands:
       - run:
           name: download and install terraform
           command: |
-            terraform --version | grep "Terraform v<< parameters.version >>"
-            if [[ "$?" = 0 ]]; then
+            {
+              terraform --version | grep "Terraform v<< parameters.version >>"
               echo Cache hit!
-              exit 0
-            fi
-            FILENAME=terraform_<< parameters.version >>_linux_amd64.zip
-            DOWNLOAD_URL=https://releases.hashicorp.com/terraform/<< parameters.version >>/$FUILENAME
-            wget -O $FILENAME $DOWNLOAD_URL
-            unzip $FILENAME
-            mv terraform /usr/local/bin/
-            rm $FILENAME
-            terraform init
+            } || {
+              FILENAME=terraform_<< parameters.version >>_linux_amd64.zip
+              DOWNLOAD_URL=https://releases.hashicorp.com/terraform/<< parameters.version >>/$FUILENAME
+              wget -O $FILENAME $DOWNLOAD_URL
+              unzip $FILENAME
+              mv terraform /usr/local/bin/
+              rm $FILENAME
+              terraform init
+            }
       - save_cache:
           name: save cache terraform binary
           paths:
