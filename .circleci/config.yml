@@ -20,7 +20,7 @@ commands:
           command: |
             {
               terraform --version | grep "Terraform v<< parameters.version >>"
-              echo Cache hit!
+              # if no error? Cache hit!
             } || {
               FILENAME=terraform_<< parameters.version >>_linux_amd64.zip
               DOWNLOAD_URL=https://releases.hashicorp.com/terraform/<< parameters.version >>/$FILENAME
