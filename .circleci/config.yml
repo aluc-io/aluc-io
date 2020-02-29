@@ -65,7 +65,7 @@ commands:
       - run:
          name: download sha256
          command: |
-            DOWNLOAD_URL=https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$ALUCIO_MAXMIND_LICENSE_KEY&suffix=tar.gz.sha256
+            DOWNLOAD_URL="https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$ALUCIO_MAXMIND_LICENSE_KEY&suffix=tar.gz.sha256"
             wget -O GeoLite2-City.tar.gz.sha256 $DOWNLOAD_URL
       - restore_cache:
           name: restore mmdb
@@ -74,7 +74,7 @@ commands:
       - run:
           name: download mmdb
           command: |
-            DOWNLOAD_URL=https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$ALUCIO_MAXMIND_LICENSE_KEY&suffix=tar.gz
+            DOWNLOAD_URL="https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$ALUCIO_MAXMIND_LICENSE_KEY&suffix=tar.gz"
             if [ ! -f "GeoLite2-City.tar.gz" ]; then
               echo "FILE does not exist"
               wget -O GeoLite2-City.tar.gz $DOWNLOAD_URL
