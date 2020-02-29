@@ -155,9 +155,9 @@ jobs:
           export SLS_STAGE=$(node -e "console.log(process.env.CIRCLE_TAG ? 'prod' : 'latest')")
 
           terraform state pull > tmp.tfstate
-          export SLS_APIGW_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_rest_api." + env.SLS_STAGE].primary.id')
-          export SLS_APIGW_ROOT_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_rest_api." + env.SLS_STAGE].primary.attributes.root_resource_id')
-          export SLS_APIGW_PROXY_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_resource." + env.SLS_STAGE].primary.id')
+          export SLS_APIGW_ID=$(cat tmp.tfstate | jq -r '.resources[] | select(.type == "aws_api_gateway_rest_api" and .name == env.SLS_STAGE) | .instances[0].attributes.id')
+          export SLS_APIGW_ROOT_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.resources[] | select(.type == "aws_api_gateway_rest_api" and .name == env.SLS_STAGE) | .instances[0].attributes.root_resource_id')
+          export SLS_APIGW_PROXY_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.resources[] | select(.type == "aws_api_gateway_resource" and .name == env.SLS_STAGE) | .instances[0].attributes.id')
 
           echo $GIT_REVISION
           echo $S3PREFIX
