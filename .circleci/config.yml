@@ -1,11 +1,108 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2.1
 
 orbs:
   aws-cli: circleci/aws-cli@0.1.13
+
+commands:
+  command-init-terraform:
+    description: initialize terraform with cache
+    parameters:
+      version:
+        type: string
+        default: 0.12.20
+    steps:
+      - restore_cache:
+          name: restore terraform binary
+          keys:
+            - v1-terraform-<< parameters.version >>
+      - run:
+          name: download and install terraform
+          command: |
+            terraform --version | grep "Terraform v<< parameters.version >>"
+            if [[ "$?" = 0 ]]; then
+              echo Cache hit!
+              exit 0
+            fi
+            FILENAME=terraform_<< parameters.version >>_linux_amd64.zip
+            DOWNLOAD_URL=https://releases.hashicorp.com/terraform/<< parameters.version >>/$FUILENAME
+            wget -O $FILENAME $DOWNLOAD_URL
+            unzip $FILENAME
+            mv terraform /usr/local/bin/
+            rm $FILENAME
+            terraform init
+      - save_cache:
+          name: save cache terraform binary
+          paths:
+            - /usr/local/bin/terraform
+            - .terraform
+          key: v1-terraform-<< parameters.version >>
+
+  command-install-ripgrep:
+    description: install ripgrep with cache
+    steps:
+      - restore_cache:
+          name: restore ripgrep deb
+          keys:
+            - v1-ripgrep-11.0.1
+      - run:
+          name: download and install ripgrep
+          command: |
+            if [ ! -f "ripgrep_11.0.1_amd64.deb" ]; then
+              echo "FILE does not exist"
+              curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb
+            fi
+            dpkg -i ripgrep_11.0.1_amd64.deb
+            rm ripgrep_11.0.1_amd64.deb
+      - save_cache:
+          name: save cache ripgrep deb
+          paths:
+            - ripgrep_11.0.1_amd64.deb
+          key: v1-ripgrep-11.0.1
+
+  command-download-mmdb:
+    description: download mmdb with cache
+    steps:
+      - run:
+         name: download sha256
+         command: |
+            DOWNLOAD_URL=https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$ALUCIO_MAXMIND_LICENSE_KEY&suffix=tar.gz.sha256
+            wget -O GeoLite2-City.tar.gz.sha256 $DOWNLOAD_URL
+      - restore_cache:
+          name: restore mmdb
+          keys:
+            - v1-mmdb-{{ checksum "GeoLite2-City.tar.gz.sha256" }}
+      - run:
+          name: download mmdb
+          command: |
+            DOWNLOAD_URL=https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$ALUCIO_MAXMIND_LICENSE_KEY&suffix=tar.gz
+            if [ ! -f "GeoLite2-City.tar.gz" ]; then
+              echo "FILE does not exist"
+              wget -O GeoLite2-City.tar.gz $DOWNLOAD_URL
+            fi
+            tar xvf GeoLite2-City.tar.gz
+            # dont remove it for ALUCIO_MMDB_PATH
+      - save_cache:
+          name: save cache mmdb
+          paths:
+            - GeoLite2-City.tar.gz
+          key: v1-mmdb-{{ checksum "GeoLite2-City.tar.gz.sha256" }}
+
+  command-yarn-install:
+    description: yarn install with cache
+    steps:
+      - restore_cache:
+          name: restore cache node modules
+          keys:
+            - v1-dependencies-{{ checksum "yarn.lock" }}
+      - run:
+          name: yarn install
+          command: |
+              yarn install
+      - save_cache:
+          name: save cache node modules
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
 
 jobs:
   gatsby_build:
@@ -14,18 +111,8 @@ jobs:
       - image: circleci/node:10.15
     steps:
       - checkout
-      - restore_cache: &restore_cache
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
-      - run: &yarn_install_build |
-          pwd
-          yarn install
-          yarn run build
-          ls -al
-      - save_cache: &save_cache
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+      - command-yarn-install
+      - run: yarn run build && ls -al
 
       # https://circleci.com/docs/2.0/workflows/#using-workspaces-to-share-artifacts-among-jobs
       - persist_to_workspace:
@@ -56,27 +143,17 @@ jobs:
       - image: circleci/node:10.15
     steps:
       - checkout
-      - restore_cache: &restore_cache
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
-            - dot-terraform-{{ checksum "main.tf" }}
+      - command-yarn-install
+      - command-init-terraform
+      - command-install-ripgrep
+      - command-download-mmdb
       - run: |
-          curl -LO https://github.com/BurntSushi/ripgrep/releases/download/11.0.1/ripgrep_11.0.1_amd64.deb
-          sudo dpkg -i ripgrep_11.0.1_amd64.deb
-          rm ripgrep_11.0.1_amd64.deb
-
-          wget https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip
-          unzip terraform_0.11.13_linux_amd64.zip
-          rm terraform_0.11.13_linux_amd64.zip
-          sudo mv terraform /usr/local/bin/
-
           ls -al
-
+          export ALUCIO_MMDB_PATH=$(tar -tf GeoLite2-City.tar.gz | rg mmdb$)
           export GIT_REVISION=$(git describe)
           export S3PREFIX=${CIRCLE_TAG:-latest}
           export SLS_STAGE=$(node -e "console.log(process.env.CIRCLE_TAG ? 'prod' : 'latest')")
 
-          terraform init
           terraform state pull > tmp.tfstate
           export SLS_APIGW_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_rest_api." + env.SLS_STAGE].primary.id')
           export SLS_APIGW_ROOT_RESOURCE_ID=$(cat tmp.tfstate | jq -r '.modules[0].resources["aws_api_gateway_rest_api." + env.SLS_STAGE].primary.attributes.root_resource_id')
@@ -91,10 +168,7 @@ jobs:
 
           npx sls package --package build --verbose
           npx sls deploy --package build --verbose
-      - save_cache:
-          paths:
-            - .terraform
-          key: dot-terraform-{{ checksum "main.tf" }}
+
       - store_artifacts:
           path: build
           destination: artifact-file
