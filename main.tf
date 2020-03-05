@@ -1,15 +1,23 @@
-variable "BUCKET_NAME" {}
-variable "ROUTE53_ZONE_NAME" {}
-variable "BLOG_DOMAIN" {}
-variable "PROJECT_NAME" {}
+variable "BUCKET_NAME" {
+}
 
-data "aws_region" "current" {}
+variable "ROUTE53_ZONE_NAME" {
+}
+
+variable "BLOG_DOMAIN" {
+}
+
+variable "PROJECT_NAME" {
+}
+
+data "aws_region" "current" {
+}
 
 terraform {
   backend "s3" {
-    bucket = "aluc.io"
-    key    = "terraform-state"
-    region = "ap-northeast-2"
+    bucket  = "aluc.io"
+    key     = "terraform-state"
+    region  = "ap-northeast-2"
     encrypt = true
   }
 }
@@ -21,12 +29,12 @@ resource "aws_cloudfront_distribution" "main" {
     origin_id   = "prod"
 
     custom_origin_config {
-      http_port = 80
-      https_port = 443
-      origin_protocol_policy = "https-only"
-      origin_ssl_protocols = ["TLSv1", "TLSv1.1", "TLSv1.2"]
+      http_port                = 80
+      https_port               = 443
+      origin_protocol_policy   = "https-only"
+      origin_ssl_protocols     = ["TLSv1", "TLSv1.1", "TLSv1.2"]
       origin_keepalive_timeout = 60
-      origin_read_timeout = 60
+      origin_read_timeout      = 60
     }
   }
 
@@ -57,7 +65,7 @@ resource "aws_cloudfront_distribution" "main" {
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
-    default_ttl            = 300
+    default_ttl            = 30
     max_ttl                = 86400
   }
 
@@ -75,8 +83,8 @@ resource "aws_cloudfront_distribution" "main" {
 
   viewer_certificate {
     cloudfront_default_certificate = false
-    acm_certificate_arn = "${data.aws_acm_certificate.alucio.arn}"
-    ssl_support_method = "sni-only"
+    acm_certificate_arn            = data.aws_acm_certificate.alucio.arn
+    ssl_support_method             = "sni-only"
   }
 }
 
@@ -86,8 +94,8 @@ resource "aws_api_gateway_rest_api" "prod" {
 }
 
 resource "aws_api_gateway_resource" "prod" {
-  rest_api_id = "${aws_api_gateway_rest_api.prod.id}"
-  parent_id   = "${aws_api_gateway_rest_api.prod.root_resource_id}"
+  rest_api_id = aws_api_gateway_rest_api.prod.id
+  parent_id   = aws_api_gateway_rest_api.prod.root_resource_id
   path_part   = "{proxy+}"
 }
 
@@ -97,17 +105,57 @@ resource "aws_api_gateway_rest_api" "latest" {
 }
 
 resource "aws_api_gateway_resource" "latest" {
-  rest_api_id = "${aws_api_gateway_rest_api.latest.id}"
-  parent_id   = "${aws_api_gateway_rest_api.latest.root_resource_id}"
+  rest_api_id = aws_api_gateway_rest_api.latest.id
+  parent_id   = aws_api_gateway_rest_api.latest.root_resource_id
   path_part   = "{proxy+}"
 }
+
+/*
+resource "aws_acm_certificate" "cert" {
+  domain_name       = "aluc.io"
+  subject_alternative_names = ["*.aluc.io"]
+  validation_method = "DNS"
+}
+resource "aws_route53_record" "cert_validation" {
+  name    = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_name}"
+  type    = "${aws_acm_certificate.cert.domain_validation_options.0.resource_record_type}"
+  zone_id = "${data.aws_route53_zone.main.id}"
+  records = ["${aws_acm_certificate.cert.domain_validation_options.0.resource_record_value}"]
+  ttl     = 60
+}
+resource "aws_acm_certificate_validation" "cert" {
+  certificate_arn         = "${aws_acm_certificate.cert.arn}"
+  validation_record_fqdns = ["${aws_route53_record.cert_validation.fqdn}"]
+}
+resource "aws_api_gateway_domain_name" "alucio" {
+  domain_name              = "aluc.io"
+  regional_certificate_arn = "${aws_acm_certificate_validation.cert.certificate_arn}"
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}
+*/
+
+/*
+resource "aws_route53_record" "to_apigateway" {
+  name    = "${aws_api_gateway_domain_name.alucio.domain_name}"
+  type    = "A"
+  zone_id = "${data.aws_route53_zone.main.id}"
+
+  alias {
+    evaluate_target_health = true
+    name                   = "${aws_api_gateway_domain_name.alucio.regional_domain_name}"
+    zone_id                = "${aws_api_gateway_domain_name.alucio.regional_zone_id}"
+  }
+}
+*/
 
 provider "aws" {
   version = "~> 2.0"
 }
 
 provider "aws" {
-  alias = "virginia"
+  alias  = "virginia"
   region = "us-east-1"
 }
 
@@ -115,11 +163,11 @@ data "aws_acm_certificate" "alucio" {
   domain      = "aluc.io"
   types       = ["AMAZON_ISSUED"]
   most_recent = true
-  provider = "aws.virginia"
+  provider    = aws.virginia
 }
 
 resource "aws_s3_bucket" "main" {
-  bucket = "${var.BUCKET_NAME}"
+  bucket = var.BUCKET_NAME
   acl    = "public-read"
   policy = <<EOF
 {
@@ -134,6 +182,7 @@ resource "aws_s3_bucket" "main" {
   ]
 }
 EOF
+
 }
 
 resource "aws_s3_bucket" "log_bucket" {
@@ -147,12 +196,13 @@ data "aws_route53_zone" "main" {
 }
 
 resource "aws_route53_record" "main" {
-  zone_id = "${data.aws_route53_zone.main.zone_id}"
-  name    = "${var.BLOG_DOMAIN}"
+  zone_id = data.aws_route53_zone.main.zone_id
+  name    = var.BLOG_DOMAIN
   type    = "A"
   alias {
-    name = "${aws_cloudfront_distribution.main.domain_name}"
-    zone_id = "${aws_cloudfront_distribution.main.hosted_zone_id}"
+    name                   = aws_cloudfront_distribution.main.domain_name
+    zone_id                = aws_cloudfront_distribution.main.hosted_zone_id
     evaluate_target_health = true
   }
 }
+

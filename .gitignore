@@ -7,8 +7,15 @@ public
 
 .envrc
 
+/build
+
 /.serverless/
 /.webpack/
-/.terraform
+/.terraform/
 
 *.log
+
+
+/GeoLite2-City_*/
+
+*.tar.gz
