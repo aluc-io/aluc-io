@@ -1,0 +1,14 @@
+version: 2.1
+
+executors:
+  my-executor:
+    docker:
+      - image: circleci/ruby:2.5.1-node-browsers
+
+jobs:
+  build:
+    executor: my-executor
+    steps:
+      - run: echo outside the executor
+
+
